@@ -16,13 +16,16 @@ import { RoomDialog } from "./RoomDialog";
 import { SCROLLBAR_WIDTH, SCROLLBAR_MARGIN } from "../scene/scrollbars";
 import { LockIcon } from "./LockIcon";
 import { LoadingMessage } from "./LoadingMessage";
+import { UserList } from "./UserList";
+import { BackgroundPickerAndDarkModeToggle } from "./BackgroundPickerAndDarkModeToggle";
 
 type MobileMenuProps = {
   appState: AppState;
   actionManager: ActionManager;
   exportButton: React.ReactNode;
-  setAppState: any;
+  setAppState: React.Component<any, AppState>["setState"];
   elements: readonly NonDeletedExcalidrawElement[];
+  libraryMenu: JSX.Element | null;
   onRoomCreate: () => void;
   onUsernameChange: (username: string) => void;
   onRoomDestroy: () => void;
@@ -33,6 +36,7 @@ type MobileMenuProps = {
 export const MobileMenu = ({
   appState,
   elements,
+  libraryMenu,
   actionManager,
   exportButton,
   setAppState,
@@ -55,6 +59,7 @@ export const MobileMenu = ({
                   <ShapesSwitcher
                     elementType={appState.elementType}
                     setAppState={setAppState}
+                    isLibraryOpen={appState.isLibraryOpen}
                   />
                 </Stack.Row>
               </Island>
@@ -64,6 +69,7 @@ export const MobileMenu = ({
                 title={t("toolBar.lock")}
               />
             </Stack.Row>
+            {libraryMenu}
           </Stack.Col>
         )}
       </Section>
@@ -94,16 +100,39 @@ export const MobileMenu = ({
                   onUsernameChange={onUsernameChange}
                   onRoomCreate={onRoomCreate}
                   onRoomDestroy={onRoomDestroy}
+                  setErrorMessage={(message: string) =>
+                    setAppState({ errorMessage: message })
+                  }
                 />
-                {actionManager.renderAction("changeViewBackgroundColor")}
+                <BackgroundPickerAndDarkModeToggle
+                  actionManager={actionManager}
+                  appState={appState}
+                  setAppState={setAppState}
+                />
                 <fieldset>
                   <legend>{t("labels.language")}</legend>
                   <LanguageList
-                    onChange={(lng) => {
-                      setLanguage(lng);
+                    onChange={async (lng) => {
+                      await setLanguage(lng);
                       setAppState({});
                     }}
                   />
+                </fieldset>
+                <fieldset>
+                  <legend>{t("labels.collaborators")}</legend>
+                  <UserList mobile>
+                    {Array.from(appState.collaborators)
+                      // Collaborator is either not initialized or is actually the current user.
+                      .filter(([_, client]) => Object.keys(client).length !== 0)
+                      .map(([clientId, client]) => (
+                        <React.Fragment key={clientId}>
+                          {actionManager.renderAction(
+                            "goToCollaborator",
+                            clientId,
+                          )}
+                        </React.Fragment>
+                      ))}
+                  </UserList>
                 </fieldset>
               </Stack.Col>
             </div>

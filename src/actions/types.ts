@@ -2,20 +2,23 @@ import React from "react";
 import { ExcalidrawElement } from "../element/types";
 import { AppState } from "../types";
 
-export type ActionResult = {
-  elements?: readonly ExcalidrawElement[] | null;
-  appState?: AppState | null;
-  commitToHistory: boolean;
-  syncHistory?: boolean;
-};
+/** if false, the action should be prevented */
+export type ActionResult =
+  | {
+      elements?: readonly ExcalidrawElement[] | null;
+      appState?: MarkOptional<AppState, "offsetTop" | "offsetLeft"> | null;
+      commitToHistory: boolean;
+      syncHistory?: boolean;
+    }
+  | false;
 
 type ActionFn = (
   elements: readonly ExcalidrawElement[],
-  appState: AppState,
+  appState: Readonly<AppState>,
   formData: any,
-) => ActionResult;
+) => ActionResult | Promise<ActionResult>;
 
-export type UpdaterFn = (res: ActionResult, commitToHistory?: boolean) => void;
+export type UpdaterFn = (res: ActionResult) => void;
 export type ActionFilterFn = (action: Action) => void;
 
 export type ActionName =
@@ -41,6 +44,7 @@ export type ActionName =
   | "finalize"
   | "changeProjectName"
   | "changeExportBackground"
+  | "changeExportEmbedScene"
   | "changeShouldAddWatermark"
   | "saveScene"
   | "saveAsScene"
@@ -58,7 +62,10 @@ export type ActionName =
   | "toggleFullScreen"
   | "toggleShortcuts"
   | "group"
-  | "ungroup";
+  | "ungroup"
+  | "goToCollaborator"
+  | "addToLibrary"
+  | "changeSharpness";
 
 export interface Action {
   name: ActionName;
@@ -66,6 +73,7 @@ export interface Action {
     elements: readonly ExcalidrawElement[];
     appState: AppState;
     updateData: (formData?: any) => void;
+    id?: string;
   }>;
   perform: ActionFn;
   keyPriority?: number;
@@ -76,6 +84,10 @@ export interface Action {
   ) => boolean;
   contextItemLabel?: string;
   contextMenuOrder?: number;
+  contextItemPredicate?: (
+    elements: readonly ExcalidrawElement[],
+    appState: AppState,
+  ) => boolean;
 }
 
 export interface ActionsManagerInterface {

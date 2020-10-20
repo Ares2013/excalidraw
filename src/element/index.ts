@@ -8,6 +8,7 @@ import { isInvisiblySmallElement } from "./sizeHelpers";
 export {
   newElement,
   newTextElement,
+  updateTextElement,
   newLinearElement,
   duplicateElement,
 } from "./newElement";
@@ -22,22 +23,30 @@ export {
 
 export {
   OMIT_SIDES_FOR_MULTIPLE_ELEMENTS,
-  handlerRectanglesFromCoords,
-  handlerRectangles,
-} from "./handlerRectangles";
-export { hitTest } from "./collision";
+  getTransformHandlesFromCoords,
+  getTransformHandles,
+} from "./transformHandles";
+export {
+  hitTest,
+  isHittingElementBoundingBoxWithoutHittingElement,
+} from "./collision";
 export {
   resizeTest,
   getCursorForResizingElement,
-  normalizeResizeHandle,
-  getElementWithResizeHandler,
-  getResizeHandlerFromCoords,
+  normalizeTransformHandleType,
+  getElementWithTransformHandleType,
+  getTransformHandleTypeFromCoords,
 } from "./resizeTest";
 export {
-  resizeElements,
+  transformElements,
   getResizeOffsetXY,
   getResizeArrowDirection,
 } from "./resizeElements";
+export {
+  dragSelectedElements,
+  getDragOffsetXY,
+  dragNewElement,
+} from "./dragElements";
 export { isTextElement, isExcalidrawElement } from "./typeChecks";
 export { textWysiwyg } from "./textWysiwyg";
 export { redrawTextBoundingBox } from "./textElement";
@@ -65,7 +74,7 @@ export const getElementMap = (elements: readonly ExcalidrawElement[]) =>
     {},
   );
 
-export const getDrawingVersion = (elements: readonly ExcalidrawElement[]) =>
+export const getSceneVersion = (elements: readonly ExcalidrawElement[]) =>
   elements.reduce((acc, el) => acc + el.version, 0);
 
 export const getNonDeletedElements = (elements: readonly ExcalidrawElement[]) =>

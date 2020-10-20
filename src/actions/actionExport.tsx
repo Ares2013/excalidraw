@@ -7,6 +7,7 @@ import { t } from "../i18n";
 import useIsMobile from "../is-mobile";
 import { register } from "./register";
 import { KEYS } from "../keys";
+import { muteFSAbortError } from "../utils";
 
 export const actionChangeProjectName = register({
   name: "changeProjectName",
@@ -42,6 +43,26 @@ export const actionChangeExportBackground = register({
   ),
 });
 
+export const actionChangeExportEmbedScene = register({
+  name: "changeExportEmbedScene",
+  perform: (_elements, appState, value) => {
+    return {
+      appState: { ...appState, exportEmbedScene: value },
+      commitToHistory: false,
+    };
+  },
+  PanelComponent: ({ appState, updateData }) => (
+    <label title={t("labels.exportEmbedScene_details")}>
+      <input
+        type="checkbox"
+        checked={appState.exportEmbedScene}
+        onChange={(event) => updateData(event.target.checked)}
+      />{" "}
+      {t("labels.exportEmbedScene")}
+    </label>
+  ),
+});
+
 export const actionChangeShouldAddWatermark = register({
   name: "changeShouldAddWatermark",
   perform: (_elements, appState, value) => {
@@ -64,11 +85,16 @@ export const actionChangeShouldAddWatermark = register({
 
 export const actionSaveScene = register({
   name: "saveScene",
-  perform: (elements, appState, value) => {
-    saveAsJSON(elements, appState, (window as any).handle).catch((error) =>
-      console.error(error),
-    );
-    return { commitToHistory: false };
+  perform: async (elements, appState, value) => {
+    try {
+      const { fileHandle } = await saveAsJSON(elements, appState);
+      return { commitToHistory: false, appState: { ...appState, fileHandle } };
+    } catch (error) {
+      if (error?.name !== "AbortError") {
+        console.error(error);
+      }
+      return { commitToHistory: false };
+    }
   },
   keyTest: (event) => {
     return event.key === "s" && event[KEYS.CTRL_OR_CMD] && !event.shiftKey;
@@ -87,9 +113,19 @@ export const actionSaveScene = register({
 
 export const actionSaveAsScene = register({
   name: "saveAsScene",
-  perform: (elements, appState, value) => {
-    saveAsJSON(elements, appState, null).catch((error) => console.error(error));
-    return { commitToHistory: false };
+  perform: async (elements, appState, value) => {
+    try {
+      const { fileHandle } = await saveAsJSON(elements, {
+        ...appState,
+        fileHandle: null,
+      });
+      return { commitToHistory: false, appState: { ...appState, fileHandle } };
+    } catch (error) {
+      if (error?.name !== "AbortError") {
+        console.error(error);
+      }
+      return { commitToHistory: false };
+    }
   },
   keyTest: (event) => {
     return event.key === "s" && event.shiftKey && event[KEYS.CTRL_OR_CMD];
@@ -101,7 +137,9 @@ export const actionSaveAsScene = register({
       title={t("buttons.saveAs")}
       aria-label={t("buttons.saveAs")}
       showAriaLabel={useIsMobile()}
-      hidden={!("chooseFileSystemEntries" in window)}
+      hidden={
+        !("chooseFileSystemEntries" in window || "showOpenFilePicker" in window)
+      }
       onClick={() => updateData(null)}
     />
   ),
@@ -120,10 +158,10 @@ export const actionLoadScene = register({
         ...loadedAppState,
         errorMessage: error,
       },
-      commitToHistory: false,
+      commitToHistory: true,
     };
   },
-  PanelComponent: ({ updateData }) => (
+  PanelComponent: ({ updateData, appState }) => (
     <ToolButton
       type="button"
       icon={load}
@@ -131,15 +169,12 @@ export const actionLoadScene = register({
       aria-label={t("buttons.load")}
       showAriaLabel={useIsMobile()}
       onClick={() => {
-        loadFromJSON()
+        loadFromJSON(appState)
           .then(({ elements, appState }) => {
             updateData({ elements: elements, appState: appState });
           })
+          .catch(muteFSAbortError)
           .catch((error) => {
-            // if user cancels, ignore the error
-            if (error.name === "AbortError") {
-              return;
-            }
             updateData({ error: error.message });
           });
       }}

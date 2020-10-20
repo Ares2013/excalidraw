@@ -2,6 +2,8 @@
   "labels": {
     "paste": "Enganxar",
     "selectAll": "Seleccionar tot",
+    "multiSelect": "Afegir element a la selecció",
+    "moveCanvas": "Moure el llenç",
     "copy": "Copiar",
     "copyAsPng": "Copiar al porta-retalls com a PNG",
     "copyAsSvg": "Copiar al porta-retalls com a SVG",
@@ -23,10 +25,15 @@
     "sloppiness": "Estil del traç",
     "opacity": "Opacitat",
     "textAlign": "Alineació del text",
+    "edges": "Vores",
+    "sharp": "Agut",
+    "round": "Arrodonit",
     "fontSize": "Mida de lletra",
     "fontFamily": "Tipus de lletra",
     "onlySelected": "Només seleccionats",
     "withBackground": "Amb fons",
+    "exportEmbedScene": "",
+    "exportEmbedScene_details": "",
     "addWatermark": "Afegir \"Fet amb Excalidraw\"",
     "handDrawn": "Dibuixat a mà",
     "normal": "Normal",
@@ -60,8 +67,14 @@
     "name": "Nom",
     "yourName": "El teu nom",
     "madeWithExcalidraw": "Fet amb Excalidraw",
-    "group": "",
-    "ungroup": ""
+    "group": "Agrupar la selecció",
+    "ungroup": "Desagrupar la selecció",
+    "collaborators": "Col·laboradors",
+    "toggleGridMode": "Commutar línies de graella",
+    "addToLibrary": "Afegir a la biblioteca",
+    "removeFromLibrary": "Eliminar de la biblioteca",
+    "libraryLoadingMessage": "Carregant la biblioteca...",
+    "loadingScene": "Carregant escena ..."
   },
   "buttons": {
     "clearReset": "Netejar el llenç",
@@ -70,7 +83,9 @@
     "exportToSvg": "Exportar a SNG",
     "copyToClipboard": "Copiar al porta-retalls",
     "copyPngToClipboard": "Copiar PNG al porta-retalls",
+    "scale": "Escala",
     "save": "Desar",
+    "saveAs": "Desar com",
     "load": "Carregar",
     "getShareableLink": "Obtenir enllaç per compartir",
     "close": "Tancar",
@@ -87,6 +102,7 @@
     "roomDialog": "Començar col·laboració en directe",
     "createNewRoom": "Crear sala nova",
     "toggleFullScreen": "Commutar pantalla completa",
+    "toggleDarkMode": "Commutar modo fosc",
     "toggleZenMode": "Commutar modo zen",
     "exitZenMode": "Sortir de modo zen"
   },
@@ -98,7 +114,12 @@
     "cannotExportEmptyCanvas": "No es pot exportar un llenç buit.",
     "couldNotCopyToClipboard": "No s'ha pogut copiar al porta-retalls. Intentar amb el navegador Google Chrome.",
     "decryptFailed": "No s'ha pogut desencriptar.",
-    "uploadedSecurly": "La càrrega s'ha assegurat amb xifratge punta a punta, cosa que significa que el servidor Excalidraw i tercers no poden llegir el contingut."
+    "uploadedSecurly": "La càrrega s'ha assegurat amb xifratge punta a punta, cosa que significa que el servidor Excalidraw i tercers no poden llegir el contingut.",
+    "loadSceneOverridePrompt": "Si carregas aquest dibuix extern, substituirá el que tens. Vols continuar?",
+    "errorLoadingLibrary": "S'ha produït un error en carregar la biblioteca de tercers.",
+    "confirmAddLibrary": "Això afegirà {{numShapes}} forma(es) a la vostra biblioteca. Estàs segur?",
+    "imageDoesNotContainScene": "",
+    "cannotRestoreFromImage": ""
   },
   "toolBar": {
     "selection": "Selecció",
@@ -109,6 +130,7 @@
     "arrow": "Fletxa",
     "line": "Línia",
     "text": "Text",
+    "library": "Biblioteca",
     "lock": "Mantenir activa l'eina seleccionada desprès de dibuixar"
   },
   "headings": {
@@ -119,12 +141,13 @@
   "hints": {
     "linearElement": "Fer clic per dibuixar múltiples punts; arrossegar per una sola línea",
     "freeDraw": "Fer clic i arrosegar, deixar anar al punt final",
+    "text": "Consell: també pots afegir text fent doble clic a qualsevol lloc amb l'eina de selecció",
     "linearElementMulti": "Fer clic a l'ultim punt, o polsar Escape o Enter per acabar",
     "resize": "Per restringir les proporcions mentres es canvia la mida, mantenir premut el majúscul (SHIFT); per canviar la mida des del centre, mantenir premut ALT",
     "rotate": "Per restringir els angles mentre gira, mantenir premut el majúscul (SHIFT)",
-    "lineEditor_info": "",
-    "lineEditor_pointSelected": "",
-    "lineEditor_nothingSelected": ""
+    "lineEditor_info": "Fes doble clic o premi Enter per editar punts",
+    "lineEditor_pointSelected": "Premi Suprimir per eliminar el punt, CtrlOrCmd+D per duplicar-lo, o arrosega'l per moure'l",
+    "lineEditor_nothingSelected": "Selecciona un punt per moure o eliminar, o manté premut Alt i fes clic per afegir punts nous"
   },
   "errorSplash": {
     "headingMain_pre": "S'ha produït un error. Intentar ",
@@ -145,9 +168,8 @@
     "button_startSession": "Iniciar sessió",
     "button_stopSession": "Aturar sessió",
     "desc_inProgressIntro": "La sessió de col·laboració en directe està en marxa.",
-    "desc_persistenceWarning": "Tingues en compte que les dades de l'escena es comparteixen entre col·laboradors de manera P2P i no es desen al nostre servidor. Així, si tots us desconnecteu, perdreu les dades, tret que els exporteu a un fitxer o a un enllaç per a compartir.",
     "desc_shareLink": "Comparteix aquest enllaç amb qualsevol persona amb qui vulguis col·laborar:",
-    "desc_exitSession": ""
+    "desc_exitSession": "Si aturas la sessió, et desconectarás de la sala, però podrás continuar treballant amb el dibuix localment. Tingues en compte que això no afectarà a altres persones, i encara podran col·laborar en la seva versió."
   },
   "errorDialog": {
     "title": "Error"
@@ -167,13 +189,14 @@
     "github": "Has trobat un problema? Enviar-ho",
     "textNewLine": "Afegir línea nova (text)",
     "textFinish": "Acabar d'editar (text)",
-    "zoomToFit": "Zoom per veure tots els elements"
+    "zoomToFit": "Zoom per veure tots els elements",
+    "preventBinding": "Prevenir vinculació de la fletxa"
   },
   "encrypted": {
     "tooltip": "Els vostres dibuixos estan xifrats de punta a punta de manera que els servidors d’Excalidraw no els veuran mai."
   },
   "charts": {
-    "noNumericColumn": "",
-    "tooManyColumns": ""
+    "noNumericColumn": "Has enganxat un full de càlcul sense columna numèrica.",
+    "tooManyColumns": "Has enganxat un full de càlcul amb més de dues columnes."
   }
 }

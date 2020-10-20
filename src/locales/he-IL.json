@@ -2,6 +2,8 @@
   "labels": {
     "paste": "הדבק",
     "selectAll": "בחר הכל",
+    "multiSelect": "",
+    "moveCanvas": "",
     "copy": "העתק",
     "copyAsPng": "העתק ללוח כ PNG",
     "copyAsSvg": "העתק ללוח כ SVG",
@@ -23,10 +25,15 @@
     "sloppiness": "סגנון",
     "opacity": "אטימות",
     "textAlign": "יישור טקסט",
+    "edges": "",
+    "sharp": "",
+    "round": "",
     "fontSize": "גודל גופן",
     "fontFamily": "סוג הגופן",
     "onlySelected": "רק מה שנבחר",
     "withBackground": "עם רקע",
+    "exportEmbedScene": "",
+    "exportEmbedScene_details": "",
     "addWatermark": "הוסף \"נוצר באמצעות Excalidraw\"",
     "handDrawn": "כתב יד",
     "normal": "רגיל",
@@ -61,7 +68,13 @@
     "yourName": "שם",
     "madeWithExcalidraw": "נוצר באמצעות Excalidraw",
     "group": "אחד לקבוצה",
-    "ungroup": "פרק קבוצה"
+    "ungroup": "פרק קבוצה",
+    "collaborators": "",
+    "toggleGridMode": "",
+    "addToLibrary": "",
+    "removeFromLibrary": "",
+    "libraryLoadingMessage": "",
+    "loadingScene": ""
   },
   "buttons": {
     "clearReset": "אפס את הלוח",
@@ -70,7 +83,9 @@
     "exportToSvg": "יצא ל SVG",
     "copyToClipboard": "העתק ללוח",
     "copyPngToClipboard": "העתק PNG ללוח",
+    "scale": "",
     "save": "שמור",
+    "saveAs": "",
     "load": "טען",
     "getShareableLink": "קבל קישור לשיתוף",
     "close": "סגור",
@@ -87,6 +102,7 @@
     "roomDialog": "התחל שיתוף חי",
     "createNewRoom": "צור חדר",
     "toggleFullScreen": "הפעל/הפסק מסך מלא",
+    "toggleDarkMode": "",
     "toggleZenMode": "התחל/הפסק מצב תפריט מרחף",
     "exitZenMode": "צא ממצב תפריט מרחף"
   },
@@ -98,7 +114,12 @@
     "cannotExportEmptyCanvas": "לא ניתן לייצא לוח ריק.",
     "couldNotCopyToClipboard": "לא ניתן להעתיק ללוח. נסה להשתמש בדפדפן Chrome.",
     "decryptFailed": "לא ניתן לפענח מידע.",
-    "uploadedSecurly": "ההעלאה הוצפנה מקצה לקצה, ולכן שרת Excalidraw וצד שלישי לא יכולים לקרוא את התוכן."
+    "uploadedSecurly": "ההעלאה הוצפנה מקצה לקצה, ולכן שרת Excalidraw וצד שלישי לא יכולים לקרוא את התוכן.",
+    "loadSceneOverridePrompt": "",
+    "errorLoadingLibrary": "",
+    "confirmAddLibrary": "",
+    "imageDoesNotContainScene": "",
+    "cannotRestoreFromImage": ""
   },
   "toolBar": {
     "selection": "בחירה",
@@ -109,6 +130,7 @@
     "arrow": "חץ",
     "line": "קו",
     "text": "טקסט",
+    "library": "",
     "lock": "השאר את הכלי הנבחר פעיל גם לאחר סיום הציור"
   },
   "headings": {
@@ -119,6 +141,7 @@
   "hints": {
     "linearElement": "הקלק בשביל לבחור נקודות מרובות, גרור בשביל קו בודד",
     "freeDraw": "לחץ וגרור, שחרר כשסיימת",
+    "text": "",
     "linearElementMulti": "הקלק על הנקודה האחרונה או הקש Escape או Enter לסיום",
     "resize": "ניתן להגביל פרופורציות על ידי לחיצה על SHIFT תוך כדי שינוי גודל,\nהחזק ALT בשביל לשנות גודל ביחס למרכז",
     "rotate": "ניתן להגביל זוויות על ידי לחיצה על SHIFT תוך כדי סיבוב",
@@ -145,7 +168,6 @@
     "button_startSession": "התחל שיתוף",
     "button_stopSession": "הפסק שיתוף",
     "desc_inProgressIntro": "שיתוף חי כרגע בפעולה.",
-    "desc_persistenceWarning": "שים לב ששיתוף הלוח נעשה בין המשתתפים ממחשב למחשב באופן ישיר, ולא נשמר בשרתים שלנו. לכן, אם כולכם תתנתקו, המידע יאבד אלא אם כן תייצא אותו לקובץ או באמצעות לינק הניתן לשיתוף.",
     "desc_shareLink": "שתף את הקישור עם כל מי שאתה מעוניין לעבוד אתו:",
     "desc_exitSession": "עצירת השיתוף תנתק אותך מהחדר, אבל עדיין תוכל להמשיך לעבוד על הלוח, מקומית. שים לב שזה לא ישפיע על אנשים אחרים, והם עדיין יוכלו לשתף פעולה עם הגירסה שלהם."
   },
@@ -167,7 +189,8 @@
     "github": "מצאת בעיה? דווח",
     "textNewLine": "הוסף שורה חדשה (טקסט)",
     "textFinish": "סיים עריכה (טקסט)",
-    "zoomToFit": "זום להתאמת כל האלמנטים למסך"
+    "zoomToFit": "זום להתאמת כל האלמנטים למסך",
+    "preventBinding": ""
   },
   "encrypted": {
     "tooltip": "הרישומים שלך מוצפנים מקצה לקצה כך שהשרתים של Excalidraw לא יראו אותם לעולם."

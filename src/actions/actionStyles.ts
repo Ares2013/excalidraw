@@ -4,15 +4,16 @@ import {
   redrawTextBoundingBox,
 } from "../element";
 import { KEYS } from "../keys";
+import { register } from "./register";
+import { mutateElement, newElementWith } from "../element/mutateElement";
 import {
   DEFAULT_FONT_SIZE,
   DEFAULT_FONT_FAMILY,
   DEFAULT_TEXT_ALIGN,
-} from "../appState";
-import { register } from "./register";
-import { mutateElement, newElementWith } from "../element/mutateElement";
+} from "../constants";
 
-let copiedStyles: string = "{}";
+// `copiedStyles` is exported only for tests.
+export let copiedStyles: string = "{}";
 
 export const actionCopyStyles = register({
   name: "copyStyles",
@@ -27,7 +28,9 @@ export const actionCopyStyles = register({
   },
   contextItemLabel: "labels.copyStyles",
   keyTest: (event) =>
-    event[KEYS.CTRL_OR_CMD] && event.shiftKey && event.key === "C",
+    event[KEYS.CTRL_OR_CMD] &&
+    event.altKey &&
+    event.keyCode === KEYS.C_KEY_CODE,
   contextMenuOrder: 0,
 });
 
@@ -45,6 +48,7 @@ export const actionPasteStyles = register({
             backgroundColor: pastedElement?.backgroundColor,
             strokeWidth: pastedElement?.strokeWidth,
             strokeColor: pastedElement?.strokeColor,
+            strokeStyle: pastedElement?.strokeStyle,
             fillStyle: pastedElement?.fillStyle,
             opacity: pastedElement?.opacity,
             roughness: pastedElement?.roughness,
@@ -66,6 +70,8 @@ export const actionPasteStyles = register({
   },
   contextItemLabel: "labels.pasteStyles",
   keyTest: (event) =>
-    event[KEYS.CTRL_OR_CMD] && event.shiftKey && event.key === "V",
+    event[KEYS.CTRL_OR_CMD] &&
+    event.altKey &&
+    event.keyCode === KEYS.V_KEY_CODE,
   contextMenuOrder: 1,
 });

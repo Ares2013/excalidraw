@@ -12,24 +12,23 @@ import { fileSave } from "browser-nativefs";
 import { t } from "../i18n";
 import {
   copyCanvasToClipboardAsPng,
-  copyCanvasToClipboardAsSvg,
+  copyTextToSystemClipboard,
 } from "../clipboard";
 import { serializeAsJSON } from "./json";
 
 import { ExportType } from "../scene/types";
 import { restore } from "./restore";
-import { restoreFromLocalStorage } from "./localStorage";
+import { ImportedDataState } from "./types";
 
 export { loadFromBlob } from "./blob";
 export { saveAsJSON, loadFromJSON } from "./json";
-export { saveToLocalStorage } from "./localStorage";
 
-const BACKEND_GET = "https://json.excalidraw.com/api/v1/";
+const BACKEND_GET = process.env.REACT_APP_BACKEND_V1_GET_URL;
 
-const BACKEND_V2_POST = "https://json.excalidraw.com/api/v2/post/";
-const BACKEND_V2_GET = "https://json.excalidraw.com/api/v2/";
+const BACKEND_V2_POST = process.env.REACT_APP_BACKEND_V2_POST_URL;
+const BACKEND_V2_GET = process.env.REACT_APP_BACKEND_V2_GET_URL;
 
-export const SOCKET_SERVER = "https://excalidraw-socket.herokuapp.com";
+export const SOCKET_SERVER = process.env.REACT_APP_SOCKET_SERVER_URL;
 
 export type EncryptedData = {
   data: ArrayBuffer;
@@ -52,8 +51,8 @@ export type SocketUpdateDataSource = {
   MOUSE_LOCATION: {
     type: "MOUSE_LOCATION";
     payload: {
-      socketID: string;
-      pointerCoords: { x: number; y: number };
+      socketId: string;
+      pointer: { x: number; y: number };
       button: "down" | "up";
       selectedElementIds: AppState["selectedElementIds"];
       username: string;
@@ -66,11 +65,6 @@ export type SocketUpdateDataIncoming =
   | {
       type: "INVALID_RESPONSE";
     };
-
-// TODO: Defined globally, since file handles aren't yet serializable.
-// Once `FileSystemFileHandle` can be serialized, make this
-// part of `AppState`.
-(window as any).handle = null;
 
 const byteToHex = (byte: number): string => `0${byte.toString(16)}`.slice(-2);
 
@@ -92,7 +86,7 @@ const generateEncryptionKey = async () => {
   return (await window.crypto.subtle.exportKey("jwk", key)).k;
 };
 
-const createIV = () => {
+export const createIV = () => {
   const arr = new Uint8Array(12);
   return window.crypto.getRandomValues(arr);
 };
@@ -111,7 +105,7 @@ export const generateCollaborationLink = async () => {
   return `${window.location.origin}${window.location.pathname}#room=${id},${key}`;
 };
 
-const getImportedKey = (key: string, usage: KeyUsage) =>
+export const getImportedKey = (key: string, usage: KeyUsage) =>
   window.crypto.subtle.importKey(
     "jwk",
     {
@@ -221,8 +215,9 @@ export const exportToBackend = async (
       // of queryParam in order to never send it to the server
       url.hash = `json=${json.id},${exportedKey.k!}`;
       const urlString = url.toString();
-
       window.prompt(`🔒${t("alerts.uploadedSecurly")}`, urlString);
+    } else if (json.error_class === "RequestTooLargeError") {
+      window.alert(t("alerts.couldNotCreateShareableLinkTooBig"));
     } else {
       window.alert(t("alerts.couldNotCreateShareableLink"));
     }
@@ -232,22 +227,19 @@ export const exportToBackend = async (
   }
 };
 
-export const importFromBackend = async (
+const importFromBackend = async (
   id: string | null,
-  privateKey: string | undefined,
-) => {
-  let elements: readonly ExcalidrawElement[] = [];
-  let appState: AppState = getDefaultAppState();
-
+  privateKey?: string | null,
+): Promise<ImportedDataState> => {
   try {
     const response = await fetch(
       privateKey ? `${BACKEND_V2_GET}${id}` : `${BACKEND_GET}${id}.json`,
     );
     if (!response.ok) {
       window.alert(t("alerts.importBackendFailed"));
-      return restore(elements, appState, { scrollToContent: true });
+      return {};
     }
-    let data;
+    let data: ImportedDataState;
     if (privateKey) {
       const buffer = await response.arrayBuffer();
       const key = await getImportedKey(privateKey, "decrypt");
@@ -270,13 +262,14 @@ export const importFromBackend = async (
       data = await response.json();
     }
 
-    elements = data.elements || elements;
-    appState = { ...appState, ...data.appState };
+    return {
+      elements: data.elements || null,
+      appState: data.appState || null,
+    };
   } catch (error) {
     window.alert(t("alerts.importBackendFailed"));
     console.error(error);
-  } finally {
-    return restore(elements, appState, { scrollToContent: true });
+    return {};
   }
 };
 
@@ -310,14 +303,23 @@ export const exportCanvas = async (
       viewBackgroundColor,
       exportPadding,
       shouldAddWatermark,
+      metadata:
+        appState.exportEmbedScene && type === "svg"
+          ? await (
+              await import(/* webpackChunkName: "image" */ "./image")
+            ).encodeSvgMetadata({
+              text: serializeAsJSON(elements, appState),
+            })
+          : undefined,
     });
     if (type === "svg") {
       await fileSave(new Blob([tempSvg.outerHTML], { type: "image/svg+xml" }), {
         fileName: `${name}.svg`,
+        extensions: [".svg"],
       });
       return;
     } else if (type === "clipboard-svg") {
-      copyCanvasToClipboardAsSvg(tempSvg);
+      copyTextToSystemClipboard(tempSvg.outerHTML);
       return;
     }
   }
@@ -334,10 +336,20 @@ export const exportCanvas = async (
 
   if (type === "png") {
     const fileName = `${name}.png`;
-    tempCanvas.toBlob(async (blob: any) => {
+    tempCanvas.toBlob(async (blob) => {
       if (blob) {
+        if (appState.exportEmbedScene) {
+          blob = await (
+            await import(/* webpackChunkName: "image" */ "./image")
+          ).encodePngMetadata({
+            blob,
+            metadata: serializeAsJSON(elements, appState),
+          });
+        }
+
         await fileSave(blob, {
           fileName: fileName,
+          extensions: [".png"],
         });
       }
     });
@@ -348,11 +360,12 @@ export const exportCanvas = async (
       window.alert(t("alerts.couldNotCopyToClipboard"));
     }
   } else if (type === "backend") {
-    const appState = getDefaultAppState();
-    if (exportBackground) {
-      appState.viewBackgroundColor = viewBackgroundColor;
-    }
-    exportToBackend(elements, appState);
+    exportToBackend(elements, {
+      ...appState,
+      viewBackgroundColor: exportBackground
+        ? appState.viewBackgroundColor
+        : getDefaultAppState().viewBackgroundColor,
+    });
   }
 
   // clean up the DOM
@@ -361,20 +374,29 @@ export const exportCanvas = async (
   }
 };
 
-export const loadScene = async (id: string | null, privateKey?: string) => {
+export const loadScene = async (
+  id: string | null,
+  privateKey: string | null,
+  // Supply initialData even if importing from backend to ensure we restore
+  // localStorage user settings which we do not persist on server.
+  // Non-optional so we don't forget to pass it even if `undefined`.
+  initialData: ImportedDataState | undefined | null,
+) => {
   let data;
   if (id != null) {
     // the private key is used to decrypt the content from the server, take
     // extra care not to leak it
-    data = await importFromBackend(id, privateKey);
-    window.history.replaceState({}, "Excalidraw", window.location.origin);
+    data = restore(
+      await importFromBackend(id, privateKey),
+      initialData?.appState,
+    );
   } else {
-    data = restoreFromLocalStorage();
+    data = restore(initialData || {}, null);
   }
 
   return {
     elements: data.elements,
-    appState: data.appState && { ...data.appState },
+    appState: data.appState,
     commitToHistory: false,
   };
 };

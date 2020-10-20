@@ -2,45 +2,6 @@ import { Point } from "./types";
 import { LINE_CONFIRM_THRESHOLD } from "./constants";
 import { ExcalidrawLinearElement } from "./element/types";
 
-// https://stackoverflow.com/a/6853926/232122
-export const distanceBetweenPointAndSegment = (
-  x: number,
-  y: number,
-  x1: number,
-  y1: number,
-  x2: number,
-  y2: number,
-) => {
-  const A = x - x1;
-  const B = y - y1;
-  const C = x2 - x1;
-  const D = y2 - y1;
-
-  const dot = A * C + B * D;
-  const lenSquare = C * C + D * D;
-  let param = -1;
-  if (lenSquare !== 0) {
-    // in case of 0 length line
-    param = dot / lenSquare;
-  }
-
-  let xx, yy;
-  if (param < 0) {
-    xx = x1;
-    yy = y1;
-  } else if (param > 1) {
-    xx = x2;
-    yy = y2;
-  } else {
-    xx = x1 + param * C;
-    yy = y1 + param * D;
-  }
-
-  const dx = x - xx;
-  const dy = y - yy;
-  return Math.hypot(dx, dy);
-};
-
 export const rotate = (
   x1: number,
   y1: number,
@@ -57,7 +18,12 @@ export const rotate = (
   ];
 
 export const adjustXYWithRotation = (
-  side: "n" | "s" | "w" | "e" | "nw" | "ne" | "sw" | "se",
+  sides: {
+    n?: boolean;
+    e?: boolean;
+    s?: boolean;
+    w?: boolean;
+  },
   x: number,
   y: number,
   angle: number,
@@ -65,49 +31,35 @@ export const adjustXYWithRotation = (
   deltaY1: number,
   deltaX2: number,
   deltaY2: number,
-  isResizeFromCenter: boolean,
 ): [number, number] => {
   const cos = Math.cos(angle);
   const sin = Math.sin(angle);
-  if (side === "e" || side === "ne" || side === "se") {
-    if (isResizeFromCenter) {
-      x += deltaX1 + deltaX2;
-    } else {
-      x += deltaX1 * (1 + cos);
-      y += deltaX1 * sin;
-      x += deltaX2 * (1 - cos);
-      y += deltaX2 * -sin;
-    }
+  if (sides.e && sides.w) {
+    x += deltaX1 + deltaX2;
+  } else if (sides.e) {
+    x += deltaX1 * (1 + cos);
+    y += deltaX1 * sin;
+    x += deltaX2 * (1 - cos);
+    y += deltaX2 * -sin;
+  } else if (sides.w) {
+    x += deltaX1 * (1 - cos);
+    y += deltaX1 * -sin;
+    x += deltaX2 * (1 + cos);
+    y += deltaX2 * sin;
   }
-  if (side === "s" || side === "sw" || side === "se") {
-    if (isResizeFromCenter) {
-      y += deltaY1 + deltaY2;
-    } else {
-      x += deltaY1 * -sin;
-      y += deltaY1 * (1 + cos);
-      x += deltaY2 * sin;
-      y += deltaY2 * (1 - cos);
-    }
-  }
-  if (side === "w" || side === "nw" || side === "sw") {
-    if (isResizeFromCenter) {
-      x += deltaX1 + deltaX2;
-    } else {
-      x += deltaX1 * (1 - cos);
-      y += deltaX1 * -sin;
-      x += deltaX2 * (1 + cos);
-      y += deltaX2 * sin;
-    }
-  }
-  if (side === "n" || side === "nw" || side === "ne") {
-    if (isResizeFromCenter) {
-      y += deltaY1 + deltaY2;
-    } else {
-      x += deltaY1 * sin;
-      y += deltaY1 * (1 - cos);
-      x += deltaY2 * -sin;
-      y += deltaY2 * (1 + cos);
-    }
+
+  if (sides.n && sides.s) {
+    y += deltaY1 + deltaY2;
+  } else if (sides.n) {
+    x += deltaY1 * sin;
+    y += deltaY1 * (1 - cos);
+    x += deltaY2 * -sin;
+    y += deltaY2 * (1 + cos);
+  } else if (sides.s) {
+    x += deltaY1 * -sin;
+    y += deltaY1 * (1 + cos);
+    x += deltaY2 * sin;
+    y += deltaY2 * (1 - cos);
   }
   return [x, y];
 };
@@ -239,6 +191,10 @@ export const distance2d = (x1: number, y1: number, x2: number, y2: number) => {
   return Math.hypot(xd, yd);
 };
 
+export const centerPoint = (a: Point, b: Point): Point => {
+  return [(a[0] + b[0]) / 2, (a[1] + b[1]) / 2];
+};
+
 // Checks if the first and last point are close enough
 // to be considered a loop
 export const isPathALoop = (
@@ -274,9 +230,9 @@ export const isPointInPolygon = (
   for (let i = 0; i < vertices; i++) {
     const current = points[i];
     const next = points[(i + 1) % vertices];
-    if (doIntersect(current, next, p, extreme)) {
-      if (orientation(current, p, next) === 0) {
-        return onSegment(current, p, next);
+    if (doSegmentsIntersect(current, next, p, extreme)) {
+      if (orderedColinearOrientation(current, p, next) === 0) {
+        return isPointWithinBounds(current, p, next);
       }
       count++;
     }
@@ -285,8 +241,9 @@ export const isPointInPolygon = (
   return count % 2 === 1;
 };
 
-// Check if q lies on the line segment pr
-const onSegment = (p: Point, q: Point, r: Point) => {
+// Returns whether `q` lies inside the segment/rectangle defined by `p` and `r`.
+// This is an approximation to "does `q` lie on a segment `pr`" check.
+const isPointWithinBounds = (p: Point, q: Point, r: Point) => {
   return (
     q[0] <= Math.max(p[0], r[0]) &&
     q[0] >= Math.min(p[0], r[0]) &&
@@ -296,10 +253,10 @@ const onSegment = (p: Point, q: Point, r: Point) => {
 };
 
 // For the ordered points p, q, r, return
-// 0 if p, q, r are collinear
+// 0 if p, q, r are colinear
 // 1 if Clockwise
 // 2 if counterclickwise
-const orientation = (p: Point, q: Point, r: Point) => {
+const orderedColinearOrientation = (p: Point, q: Point, r: Point) => {
   const val = (q[1] - p[1]) * (r[0] - q[0]) - (q[0] - p[0]) * (r[1] - q[1]);
   if (val === 0) {
     return 0;
@@ -308,35 +265,49 @@ const orientation = (p: Point, q: Point, r: Point) => {
 };
 
 // Check is p1q1 intersects with p2q2
-const doIntersect = (p1: Point, q1: Point, p2: Point, q2: Point) => {
-  const o1 = orientation(p1, q1, p2);
-  const o2 = orientation(p1, q1, q2);
-  const o3 = orientation(p2, q2, p1);
-  const o4 = orientation(p2, q2, q1);
+const doSegmentsIntersect = (p1: Point, q1: Point, p2: Point, q2: Point) => {
+  const o1 = orderedColinearOrientation(p1, q1, p2);
+  const o2 = orderedColinearOrientation(p1, q1, q2);
+  const o3 = orderedColinearOrientation(p2, q2, p1);
+  const o4 = orderedColinearOrientation(p2, q2, q1);
 
   if (o1 !== o2 && o3 !== o4) {
     return true;
   }
 
   // p1, q1 and p2 are colinear and p2 lies on segment p1q1
-  if (o1 === 0 && onSegment(p1, p2, q1)) {
+  if (o1 === 0 && isPointWithinBounds(p1, p2, q1)) {
     return true;
   }
 
   // p1, q1 and p2 are colinear and q2 lies on segment p1q1
-  if (o2 === 0 && onSegment(p1, q2, q1)) {
+  if (o2 === 0 && isPointWithinBounds(p1, q2, q1)) {
     return true;
   }
 
   // p2, q2 and p1 are colinear and p1 lies on segment p2q2
-  if (o3 === 0 && onSegment(p2, p1, q2)) {
+  if (o3 === 0 && isPointWithinBounds(p2, p1, q2)) {
     return true;
   }
 
   // p2, q2 and q1 are colinear and q1 lies on segment p2q2
-  if (o4 === 0 && onSegment(p2, q1, q2)) {
+  if (o4 === 0 && isPointWithinBounds(p2, q1, q2)) {
     return true;
   }
 
   return false;
+};
+
+export const getGridPoint = (
+  x: number,
+  y: number,
+  gridSize: number | null,
+): [number, number] => {
+  if (gridSize) {
+    return [
+      Math.round(x / gridSize) * gridSize,
+      Math.round(y / gridSize) * gridSize,
+    ];
+  }
+  return [x, y];
 };

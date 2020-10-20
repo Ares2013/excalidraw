@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
+import clsx from "clsx";
 import { ToolButton } from "./ToolButton";
 import { t } from "../i18n";
 import useIsMobile from "../is-mobile";
@@ -16,6 +17,7 @@ const RoomModal = ({
   onRoomCreate,
   onRoomDestroy,
   onPressingEnter,
+  setErrorMessage,
 }: {
   activeRoomLink: string;
   username: string;
@@ -23,11 +25,16 @@ const RoomModal = ({
   onRoomCreate: () => void;
   onRoomDestroy: () => void;
   onPressingEnter: () => void;
+  setErrorMessage: (message: string) => void;
 }) => {
   const roomLinkInput = useRef<HTMLInputElement>(null);
 
-  const copyRoomLink = () => {
-    copyTextToSystemClipboard(activeRoomLink);
+  const copyRoomLink = async () => {
+    try {
+      await copyTextToSystemClipboard(activeRoomLink);
+    } catch (error) {
+      setErrorMessage(error.message);
+    }
     if (roomLinkInput.current) {
       roomLinkInput.current.select();
     }
@@ -90,12 +97,11 @@ const RoomModal = ({
               onKeyPress={(event) => event.key === "Enter" && onPressingEnter()}
             />
           </div>
-          <p>{`🔒 ${t("roomDialog.desc_privacy")}`}</p>
           <p>
-            <span role="img" aria-hidden="true">
-              ⚠️
+            <span role="img" aria-hidden="true" className="RoomDialog-emoji">
+              {"🔒"}
             </span>{" "}
-            {t("roomDialog.desc_persistenceWarning")}
+            {t("roomDialog.desc_privacy")}
           </p>
           <p>{t("roomDialog.desc_exitSession")}</p>
           <div className="RoomDialog-sessionStartButtonContainer">
@@ -122,6 +128,7 @@ export const RoomDialog = ({
   onUsernameChange,
   onRoomCreate,
   onRoomDestroy,
+  setErrorMessage,
 }: {
   isCollaborating: AppState["isCollaborating"];
   collaboratorCount: number;
@@ -129,6 +136,7 @@ export const RoomDialog = ({
   onUsernameChange: (username: string) => void;
   onRoomCreate: () => void;
   onRoomDestroy: () => void;
+  setErrorMessage: (message: string) => void;
 }) => {
   const [modalIsShown, setModalIsShown] = useState(false);
   const [activeRoomLink, setActiveRoomLink] = useState("");
@@ -147,9 +155,9 @@ export const RoomDialog = ({
   return (
     <>
       <ToolButton
-        className={`RoomDialog-modalButton ${
-          isCollaborating ? "is-collaborating" : ""
-        }`}
+        className={clsx("RoomDialog-modalButton", {
+          "is-collaborating": isCollaborating,
+        })}
         onClick={() => setModalIsShown(true)}
         icon={users}
         type="button"
@@ -177,6 +185,7 @@ export const RoomDialog = ({
             onRoomCreate={onRoomCreate}
             onRoomDestroy={onRoomDestroy}
             onPressingEnter={handleClose}
+            setErrorMessage={setErrorMessage}
           />
         </Dialog>
       )}

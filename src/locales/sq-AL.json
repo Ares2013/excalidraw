@@ -2,6 +2,8 @@
   "labels": {
     "paste": "Ngjit",
     "selectAll": "Përzgjidh të gjitha",
+    "multiSelect": "",
+    "moveCanvas": "",
     "copy": "Kopjo",
     "copyAsPng": "Kopjo në clipboard si PNG",
     "copyAsSvg": "Kopjo në clipboard si SVG",
@@ -23,10 +25,15 @@
     "sloppiness": "",
     "opacity": "Transparenca",
     "textAlign": "",
+    "edges": "",
+    "sharp": "",
+    "round": "",
     "fontSize": "Madhësia e gërmave",
     "fontFamily": "Familja e gërmave",
     "onlySelected": "Vetëm të përzgjedhurat",
     "withBackground": "Me sfondin",
+    "exportEmbedScene": "",
+    "exportEmbedScene_details": "",
     "addWatermark": "Shto \"Made with Excalidraw\"",
     "handDrawn": "Vizatuar me dorë",
     "normal": "Normale",
@@ -61,7 +68,13 @@
     "yourName": "",
     "madeWithExcalidraw": "",
     "group": "",
-    "ungroup": ""
+    "ungroup": "",
+    "collaborators": "",
+    "toggleGridMode": "",
+    "addToLibrary": "",
+    "removeFromLibrary": "",
+    "libraryLoadingMessage": "",
+    "loadingScene": ""
   },
   "buttons": {
     "clearReset": "",
@@ -70,7 +83,9 @@
     "exportToSvg": "",
     "copyToClipboard": "",
     "copyPngToClipboard": "",
+    "scale": "",
     "save": "",
+    "saveAs": "",
     "load": "",
     "getShareableLink": "",
     "close": "",
@@ -87,6 +102,7 @@
     "roomDialog": "",
     "createNewRoom": "",
     "toggleFullScreen": "",
+    "toggleDarkMode": "",
     "toggleZenMode": "",
     "exitZenMode": ""
   },
@@ -98,7 +114,12 @@
     "cannotExportEmptyCanvas": "Nuk eksportohet telajo bosh.",
     "couldNotCopyToClipboard": "",
     "decryptFailed": "S'mund të deshifroj të dhënat.",
-    "uploadedSecurly": ""
+    "uploadedSecurly": "",
+    "loadSceneOverridePrompt": "",
+    "errorLoadingLibrary": "",
+    "confirmAddLibrary": "",
+    "imageDoesNotContainScene": "",
+    "cannotRestoreFromImage": ""
   },
   "toolBar": {
     "selection": "Përzgjedhja",
@@ -109,6 +130,7 @@
     "arrow": "Shigjetë",
     "line": "Vijë",
     "text": "Tekst",
+    "library": "",
     "lock": ""
   },
   "headings": {
@@ -119,6 +141,7 @@
   "hints": {
     "linearElement": "",
     "freeDraw": "",
+    "text": "",
     "linearElementMulti": "",
     "resize": "",
     "rotate": "",
@@ -145,7 +168,6 @@
     "button_startSession": "Nis sesionin",
     "button_stopSession": "Ndal sesionin",
     "desc_inProgressIntro": "",
-    "desc_persistenceWarning": "",
     "desc_shareLink": "",
     "desc_exitSession": ""
   },
@@ -167,7 +189,8 @@
     "github": "",
     "textNewLine": "",
     "textFinish": "",
-    "zoomToFit": ""
+    "zoomToFit": "",
+    "preventBinding": ""
   },
   "encrypted": {
     "tooltip": ""

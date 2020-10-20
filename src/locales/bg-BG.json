@@ -2,6 +2,8 @@
   "labels": {
     "paste": "Постави",
     "selectAll": "Маркирай всичко",
+    "multiSelect": "",
+    "moveCanvas": "",
     "copy": "Копирай",
     "copyAsPng": "Копиране в клипборда",
     "copyAsSvg": "Копиране в клипборда",
@@ -23,10 +25,15 @@
     "sloppiness": "Небрежност",
     "opacity": "Непрозрачност",
     "textAlign": "Подравняване на текста",
+    "edges": "",
+    "sharp": "",
+    "round": "",
     "fontSize": "Размер на шрифта",
     "fontFamily": "Семейство шрифтове",
     "onlySelected": "Само избраното",
     "withBackground": "С фон",
+    "exportEmbedScene": "",
+    "exportEmbedScene_details": "",
     "addWatermark": "",
     "handDrawn": "Нарисувано на ръка",
     "normal": "Нормален",
@@ -61,7 +68,13 @@
     "yourName": "",
     "madeWithExcalidraw": "",
     "group": "",
-    "ungroup": ""
+    "ungroup": "",
+    "collaborators": "",
+    "toggleGridMode": "",
+    "addToLibrary": "",
+    "removeFromLibrary": "",
+    "libraryLoadingMessage": "",
+    "loadingScene": ""
   },
   "buttons": {
     "clearReset": "Нулиране на платно",
@@ -70,7 +83,9 @@
     "exportToSvg": "Изнасяне в SVG",
     "copyToClipboard": "Копиране в клипборда",
     "copyPngToClipboard": "Копирай PNG в клипборда",
+    "scale": "",
     "save": "Запази",
+    "saveAs": "Запиши като",
     "load": "Зареждане",
     "getShareableLink": "Получаване на връзка за споделяне",
     "close": "Затвори",
@@ -87,6 +102,7 @@
     "roomDialog": "Започнете сътрудничество на живо",
     "createNewRoom": "Създай нова стая",
     "toggleFullScreen": "Превключване на цял екран",
+    "toggleDarkMode": "",
     "toggleZenMode": "",
     "exitZenMode": ""
   },
@@ -98,7 +114,12 @@
     "cannotExportEmptyCanvas": "Не може да се експортира празно платно.",
     "couldNotCopyToClipboard": "Неуспешно копиране в клипборда. Опитайте да използвате браузъра Chrome.",
     "decryptFailed": "Данните не можаха да се дешифрират.",
-    "uploadedSecurly": "Качването е защитено с криптиране от край до край, което означава, че сървърът Excalidraw и трети страни не могат да четат съдържанието."
+    "uploadedSecurly": "Качването е защитено с криптиране от край до край, което означава, че сървърът Excalidraw и трети страни не могат да четат съдържанието.",
+    "loadSceneOverridePrompt": "",
+    "errorLoadingLibrary": "",
+    "confirmAddLibrary": "",
+    "imageDoesNotContainScene": "",
+    "cannotRestoreFromImage": ""
   },
   "toolBar": {
     "selection": "Селекция",
@@ -109,6 +130,7 @@
     "arrow": "Стрелка",
     "line": "Линия",
     "text": "Текст",
+    "library": "",
     "lock": "Поддържайте избрания инструмент активен след рисуване"
   },
   "headings": {
@@ -119,6 +141,7 @@
   "hints": {
     "linearElement": "Кликнете, за да стартирате няколко точки, плъзнете за една линия",
     "freeDraw": "",
+    "text": "",
     "linearElementMulti": "Кликнете върху последната точка или натиснете Escape или Enter, за да завършите",
     "resize": "",
     "rotate": "Можете да ограничите ъглите, като държите SHIFT, докато се въртите",
@@ -145,7 +168,6 @@
     "button_startSession": "Стартирайте сесията",
     "button_stopSession": "Стоп на сесията",
     "desc_inProgressIntro": "Сесията за сътрудничество на живо е в ход.",
-    "desc_persistenceWarning": "",
     "desc_shareLink": "Споделете тази връзка с всеки, с когото искате да си сътрудничите:",
     "desc_exitSession": ""
   },
@@ -167,7 +189,8 @@
     "github": "Намерихте проблем? Изпратете",
     "textNewLine": "Добавяне на нов ред (текст)",
     "textFinish": "Завършете редактиране (текст)",
-    "zoomToFit": ""
+    "zoomToFit": "",
+    "preventBinding": ""
   },
   "encrypted": {
     "tooltip": ""
