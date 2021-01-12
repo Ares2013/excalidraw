@@ -1,9 +1,11 @@
 {
   "labels": {
     "paste": "貼上",
+    "pasteCharts": "貼上圖表",
     "selectAll": "全選",
     "multiSelect": "將物件加入選取範圍",
     "moveCanvas": "移動畫布",
+    "cut": "剪下",
     "copy": "複製",
     "copyAsPng": "複製 PNG 至剪貼簿",
     "copyAsSvg": "複製 SVG 至剪貼簿",
@@ -28,6 +30,11 @@
     "edges": "邊緣",
     "sharp": "尖銳",
     "round": "平滑",
+    "arrowheads": "箭頭",
+    "arrowhead_none": "無",
+    "arrowhead_arrow": "箭頭",
+    "arrowhead_bar": "塊",
+    "arrowhead_dot": "點",
     "fontSize": "字型大小",
     "fontFamily": "字體",
     "onlySelected": "僅選取物件",
@@ -54,7 +61,7 @@
     "architect": "精確",
     "artist": "藝術",
     "cartoonist": "卡通",
-    "fileTitle": "檔案名稱",
+    "fileTitle": "檔案標題",
     "colorPicker": "色彩選擇工具",
     "canvasBackground": "Canvas 背景",
     "drawingCanvas": "繪圖 canvas",
@@ -70,11 +77,21 @@
     "group": "建立群組",
     "ungroup": "取消群組",
     "collaborators": "協作者",
-    "toggleGridMode": "切換格線模式",
+    "gridMode": "網格模式",
     "addToLibrary": "加入資料庫",
     "removeFromLibrary": "從資料庫中移除",
     "libraryLoadingMessage": "資料庫讀取中…",
-    "loadingScene": "場景讀取中…"
+    "libraries": "瀏覽資料庫",
+    "loadingScene": "場景讀取中…",
+    "align": "對齊",
+    "alignTop": "對齊頂部",
+    "alignBottom": "對齊底部",
+    "alignLeft": "對齊左側",
+    "alignRight": "對齊右側",
+    "centerVertically": "垂直置中",
+    "centerHorizontally": "水平置中",
+    "distributeHorizontally": "水平分布",
+    "distributeVertically": "垂直分布"
   },
   "buttons": {
     "clearReset": "重置 canvas",
@@ -101,14 +118,16 @@
     "redo": "重做",
     "roomDialog": "開始即時協作",
     "createNewRoom": "建立新協作會議室",
-    "toggleFullScreen": "切換全螢幕",
-    "toggleDarkMode": "切換深色模式",
-    "toggleZenMode": "切換專注模式",
+    "fullScreen": "全螢幕",
+    "darkMode": "深色模式",
+    "lightMode": "淺色模式",
+    "zenMode": "專注模式",
     "exitZenMode": "離開專注模式"
   },
   "alerts": {
     "clearReset": "這將會清除整個 canvas。你確定嗎？",
     "couldNotCreateShareableLink": "無法建立共享連結。",
+    "couldNotCreateShareableLinkTooBig": "無法建立共享連結：場景太大",
     "couldNotLoadInvalidFile": "無法讀取失效的檔案。",
     "importBackendFailed": "後端讀取失敗。",
     "cannotExportEmptyCanvas": "無法輸出空白的 canvas。",
@@ -118,7 +137,7 @@
     "loadSceneOverridePrompt": "讀取外部圖樣將取代目前的內容。是否要繼續？",
     "errorLoadingLibrary": "載入第三方套件時出現錯誤。",
     "confirmAddLibrary": "這將會將 {{numShapes}} 個圖形加入你的資料庫，你確定嗎？",
-    "imageDoesNotContainScene": "圖檔中未包含場景資料。輸出檔案時是否有包含此資料？",
+    "imageDoesNotContainScene": "目前尚不支援載入圖片。\n您是否要載入場景？此圖片中並無任何場景資料，輸出時是否有選擇包含？",
     "cannotRestoreFromImage": "無法由此檔案回復場景。"
   },
   "toolBar": {
@@ -143,11 +162,17 @@
     "freeDraw": "點擊並拖曳來繪圖，放開即結束",
     "text": "提示：亦可使用選取工具在任何地方雙擊來加入文字",
     "linearElementMulti": "按下 Escape 或 Enter 以結束繪製",
+    "lockAngle": "按住 SHIFT 可限制旋轉角度",
     "resize": "縮放時按住 Shift 可保持原比例縮放；\\n按住 Alt 可由中心點進行縮放",
     "rotate": "旋轉時按住 Shift 可限制旋轉角度",
     "lineEditor_info": "雙擊滑鼠左鍵或按 Enter 來編輯控制點",
     "lineEditor_pointSelected": "按下 Delete 可移除錨點；Ctrl 或 Cmd + D 可複製；或可拖曳來移動",
     "lineEditor_nothingSelected": "點選想移動或刪除的控制點；或按住 Alt 再點擊以增加新控制點"
+  },
+  "canvasError": {
+    "cannotShowPreview": "無法顯示預覽",
+    "canvasTooBig": "畫布可能過大",
+    "canvasTooBigTip": "提示：可嘗試將最遠的元素移動至較集中的位置"
   },
   "errorSplash": {
     "headingMain_pre": "發生錯誤，嘗試",
@@ -190,13 +215,22 @@
     "textNewLine": "換行（文字）",
     "textFinish": "完成編輯（文字）",
     "zoomToFit": "放大至填滿畫面",
+    "zoomToSelection": "縮放至選取區",
     "preventBinding": "防止箭頭綁定"
   },
   "encrypted": {
     "tooltip": "你的作品已使用 end-to-end 方式加密，Excalidraw 的伺服器也無法取得其內容。"
   },
-  "charts": {
-    "noNumericColumn": "你貼上的 spreadsheet 沒有數字欄。",
-    "tooManyColumns": "你貼上的 spreadsheet 超過兩欄。"
+  "stats": {
+    "angle": "角度",
+    "element": "元素",
+    "elements": "元素",
+    "height": "高度",
+    "scene": "場景",
+    "selected": "已選",
+    "storage": "儲存",
+    "title": "詳細統計",
+    "total": "合計",
+    "width": "寬度"
   }
 }

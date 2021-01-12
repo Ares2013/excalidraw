@@ -18,6 +18,7 @@ import {
 import { AppState } from "../types";
 import { fixBindingsAfterDuplication } from "../element/binding";
 import { ActionResult } from "./types";
+import { GRID_SIZE } from "../constants";
 
 export const actionDuplicateSelection = register({
   name: "duplicateSelection",
@@ -63,7 +64,7 @@ export const actionDuplicateSelection = register({
     };
   },
   contextItemLabel: "labels.duplicateSelection",
-  keyTest: (event) => event[KEYS.CTRL_OR_CMD] && event.key === "d",
+  keyTest: (event) => event[KEYS.CTRL_OR_CMD] && event.key === KEYS.D,
   PanelComponent: ({ elements, appState, updateData }) => (
     <ToolButton
       type="button"
@@ -93,8 +94,8 @@ const duplicateElements = (
       groupIdMap,
       element,
       {
-        x: element.x + 10,
-        y: element.y + 10,
+        x: element.x + GRID_SIZE / 2,
+        y: element.y + GRID_SIZE / 2,
       },
     );
     oldIdToDuplicatedId.set(element.id, newElement.id);
@@ -105,9 +106,9 @@ const duplicateElements = (
 
   const finalElements: ExcalidrawElement[] = [];
 
-  let i = 0;
-  while (i < elements.length) {
-    const element = elements[i];
+  let index = 0;
+  while (index < elements.length) {
+    const element = elements[index];
     if (appState.selectedElementIds[element.id]) {
       if (element.groupIds.length) {
         const groupId = getSelectedGroupForElement(appState, element);
@@ -120,7 +121,7 @@ const duplicateElements = (
               duplicateAndOffsetElement(element),
             ),
           );
-          i = i + groupElements.length;
+          index = index + groupElements.length;
           continue;
         }
       }
@@ -128,7 +129,7 @@ const duplicateElements = (
     } else {
       finalElements.push(element);
     }
-    i++;
+    index++;
   }
 
   fixBindingsAfterDuplication(finalElements, oldElements, oldIdToDuplicatedId);

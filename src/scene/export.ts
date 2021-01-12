@@ -9,6 +9,7 @@ import { normalizeScroll } from "./scroll";
 import { AppState } from "../types";
 import { t } from "../i18n";
 import { DEFAULT_FONT_FAMILY, DEFAULT_VERTICAL_ALIGN } from "../constants";
+import { getDefaultAppState } from "../appState";
 
 export const SVG_EXPORT_TAG = `<!-- svg-source:excalidraw -->`;
 const WATERMARK_HEIGHT = 16;
@@ -60,7 +61,7 @@ export const exportToCanvas = (
       viewBackgroundColor: exportBackground ? viewBackgroundColor : null,
       scrollX: normalizeScroll(-minX + exportPadding),
       scrollY: normalizeScroll(-minY + exportPadding),
-      zoom: 1,
+      zoom: getDefaultAppState().zoom,
       remotePointerViewportCoords: {},
       remoteSelectedElementIds: {},
       shouldCacheIgnoreZoom: false,
@@ -83,11 +84,13 @@ export const exportToSvg = (
     exportBackground,
     exportPadding = 10,
     viewBackgroundColor,
+    scale = 1,
     shouldAddWatermark,
     metadata = "",
   }: {
     exportBackground: boolean;
     exportPadding?: number;
+    scale?: number;
     viewBackgroundColor: string;
     shouldAddWatermark: boolean;
     metadata?: string;
@@ -106,6 +109,8 @@ export const exportToSvg = (
   svgRoot.setAttribute("version", "1.1");
   svgRoot.setAttribute("xmlns", SVG_NS);
   svgRoot.setAttribute("viewBox", `0 0 ${width} ${height}`);
+  svgRoot.setAttribute("width", `${width * scale}`);
+  svgRoot.setAttribute("height", `${height * scale}`);
 
   svgRoot.innerHTML = `
   ${SVG_EXPORT_TAG}
@@ -124,7 +129,7 @@ export const exportToSvg = (
   </defs>
   `;
 
-  // render backgroiund rect
+  // render background rect
   if (exportBackground && viewBackgroundColor) {
     const rect = svgRoot.ownerDocument!.createElementNS(SVG_NS, "rect");
     rect.setAttribute("x", "0");

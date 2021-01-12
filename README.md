@@ -18,9 +18,13 @@
 
 ## Try it now
 
-Go to https://excalidraw.com to start sketching.
+Go to [excalidraw.com](https://excalidraw.com) to start sketching.
 
 Read our [blog](https://blog.excalidraw.com) and follow the [guides](https://howto.excalidraw.com) to learn more about Excalidraw and how to use it effectively.
+
+## Shape libraries
+
+Find a growing list of libraries containing assets for your drawings at [libraries.excalidraw.com](https://libraries.excalidraw.com).
 
 ## Run the code
 
@@ -95,11 +99,9 @@ And the main source of inspiration for starting the project is the awesome [Zwib
 
 ## Testimonials
 
-<a href="https://twitter.com/Lissy_Sykes/status/1213813117177729026"><img width="398" src="https://user-images.githubusercontent.com/197597/71783813-dbf8a600-2fa0-11ea-9c0d-bb3cc45969e6.png"></a>
-<a href="https://twitter.com/dan_abramov/status/1213762494428262400"><img width="398" src="https://user-images.githubusercontent.com/197597/71783990-4d395880-2fa3-11ea-9ad7-186138db5003.png"></a>
+<a href="https://twitter.com/Lissy_Sykes/status/1213813117177729026"><img width="398" src="https://user-images.githubusercontent.com/197597/71783813-dbf8a600-2fa0-11ea-9c0d-bb3cc45969e6.png"></a> <a href="https://twitter.com/dan_abramov/status/1213762494428262400"><img width="398" src="https://user-images.githubusercontent.com/197597/71783990-4d395880-2fa3-11ea-9ad7-186138db5003.png"></a>
 
-<a href="https://twitter.com/kyehohenberger/status/1214288572037025792"><img width="423" src="https://user-images.githubusercontent.com/197597/71851802-34f13880-308c-11ea-9416-191099e6349c.png"></a>
-<a href="https://twitter.com/lucasazzola/status/1215126440330416128"><img width="429" src="https://user-images.githubusercontent.com/197597/72039003-48e99580-3258-11ea-8daa-85dd055f2a82.png">
+<a href="https://twitter.com/kyehohenberger/status/1214288572037025792"><img width="423" src="https://user-images.githubusercontent.com/197597/71851802-34f13880-308c-11ea-9416-191099e6349c.png"></a> <a href="https://twitter.com/lucasazzola/status/1215126440330416128"><img width="429" src="https://user-images.githubusercontent.com/197597/72039003-48e99580-3258-11ea-8daa-85dd055f2a82.png">
 
 <a href="https://twitter.com/jordwalke/status/1214858186789806080"><img width="434" src="https://user-images.githubusercontent.com/197597/72036874-07a1b780-3251-11ea-99e8-6bafd93483a0.png"></a>
 
@@ -107,8 +109,7 @@ And the main source of inspiration for starting the project is the awesome [Zwib
 
 ### Code Contributors
 
-This project exists thanks to all the people who contribute. [[Contribute](CONTRIBUTING.md)].
-<a href="https://github.com/excalidraw/excalidraw/graphs/contributors"><img src="https://opencollective.com/excalidraw/contributors.svg?width=890&button=false" /></a>
+This project exists thanks to all the people who contribute. [[Contribute](CONTRIBUTING.md)]. <a href="https://github.com/excalidraw/excalidraw/graphs/contributors"><img src="https://opencollective.com/excalidraw/contributors.svg?width=890&button=false" /></a>
 
 ### Financial Contributors
 
@@ -122,13 +123,4 @@ Become a financial contributor and help us sustain our community. [[Contribute](
 
 Support this project with your organization. Your logo will show up here with a link to your website. [[Contribute](https://opencollective.com/excalidraw/contribute)]
 
-<a href="https://opencollective.com/excalidraw/organization/0/website"><img src="https://opencollective.com/excalidraw/organization/0/avatar.svg"></a>
-<a href="https://opencollective.com/excalidraw/organization/1/website"><img src="https://opencollective.com/excalidraw/organization/1/avatar.svg"></a>
-<a href="https://opencollective.com/excalidraw/organization/2/website"><img src="https://opencollective.com/excalidraw/organization/2/avatar.svg"></a>
-<a href="https://opencollective.com/excalidraw/organization/3/website"><img src="https://opencollective.com/excalidraw/organization/3/avatar.svg"></a>
-<a href="https://opencollective.com/excalidraw/organization/4/website"><img src="https://opencollective.com/excalidraw/organization/4/avatar.svg"></a>
-<a href="https://opencollective.com/excalidraw/organization/5/website"><img src="https://opencollective.com/excalidraw/organization/5/avatar.svg"></a>
-<a href="https://opencollective.com/excalidraw/organization/6/website"><img src="https://opencollective.com/excalidraw/organization/6/avatar.svg"></a>
-<a href="https://opencollective.com/excalidraw/organization/7/website"><img src="https://opencollective.com/excalidraw/organization/7/avatar.svg"></a>
-<a href="https://opencollective.com/excalidraw/organization/8/website"><img src="https://opencollective.com/excalidraw/organization/8/avatar.svg"></a>
-<a href="https://opencollective.com/excalidraw/organization/9/website"><img src="https://opencollective.com/excalidraw/organization/9/avatar.svg"></a>
+<a href="https://opencollective.com/excalidraw/organization/0/website"><img src="https://opencollective.com/excalidraw/organization/0/avatar.svg"></a> <a href="https://opencollective.com/excalidraw/organization/1/website"><img src="https://opencollective.com/excalidraw/organization/1/avatar.svg"></a> <a href="https://opencollective.com/excalidraw/organization/2/website"><img src="https://opencollective.com/excalidraw/organization/2/avatar.svg"></a> <a href="https://opencollective.com/excalidraw/organization/3/website"><img src="https://opencollective.com/excalidraw/organization/3/avatar.svg"></a> <a href="https://opencollective.com/excalidraw/organization/4/website"><img src="https://opencollective.com/excalidraw/organization/4/avatar.svg"></a> <a href="https://opencollective.com/excalidraw/organization/5/website"><img src="https://opencollective.com/excalidraw/organization/5/avatar.svg"></a> <a href="https://opencollective.com/excalidraw/organization/6/website"><img src="https://opencollective.com/excalidraw/organization/6/avatar.svg"></a> <a href="https://opencollective.com/excalidraw/organization/7/website"><img src="https://opencollective.com/excalidraw/organization/7/avatar.svg"></a> <a href="https://opencollective.com/excalidraw/organization/8/website"><img src="https://opencollective.com/excalidraw/organization/8/avatar.svg"></a> <a href="https://opencollective.com/excalidraw/organization/9/website"><img src="https://opencollective.com/excalidraw/organization/9/avatar.svg"></a>

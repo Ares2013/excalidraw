@@ -3,7 +3,7 @@ import {
   FontFamily,
   ExcalidrawSelectionElement,
 } from "../element/types";
-import { AppState } from "../types";
+import { AppState, NormalizedZoomValue } from "../types";
 import { DataState, ImportedDataState } from "./types";
 import { isInvisiblySmallElement, getNormalizedDimensions } from "../element";
 import { isLinearElementType } from "../element/typeChecks";
@@ -32,10 +32,10 @@ const restoreElementWithProperties = <T extends ExcalidrawElement>(
   const base: Pick<T, keyof ExcalidrawElement> = {
     type: element.type,
     // all elements must have version > 0 so getSceneVersion() will pick up
-    //  newly added elements
+    // newly added elements
     version: element.version || 1,
     versionNonce: element.versionNonce ?? 0,
-    isDeleted: false,
+    isDeleted: element.isDeleted ?? false,
     id: element.id || randomId(),
     fillStyle: element.fillStyle || "hachure",
     strokeWidth: element.strokeWidth || 1,
@@ -57,11 +57,11 @@ const restoreElementWithProperties = <T extends ExcalidrawElement>(
     boundElementIds: element.boundElementIds ?? [],
   };
 
-  return {
+  return ({
     ...base,
     ...getNormalizedDimensions(base),
     ...extra,
-  } as T;
+  } as unknown) as T;
 };
 
 const restoreElement = (
@@ -90,6 +90,11 @@ const restoreElement = (
     case "draw":
     case "line":
     case "arrow": {
+      const {
+        startArrowhead = null,
+        endArrowhead = element.type === "arrow" ? "arrow" : null,
+      } = element;
+
       return restoreElementWithProperties(element, {
         startBinding: element.startBinding,
         endBinding: element.endBinding,
@@ -102,6 +107,8 @@ const restoreElement = (
               ]
             : element.points,
         lastCommittedPoint: null,
+        startArrowhead,
+        endArrowhead,
       });
     }
     // generic elements
@@ -112,9 +119,9 @@ const restoreElement = (
     case "diamond":
       return restoreElementWithProperties(element, {});
 
-    // don't use default case so as to catch a missing an element type case
-    //  (we also don't want to throw, but instead return void so we
-    //   filter out these unsupported elements from the restored array)
+    // Don't use default case so as to catch a missing an element type case.
+    // We also don't want to throw, but instead return void so we filter
+    // out these unsupported elements from the restored array.
   }
 };
 
@@ -123,7 +130,7 @@ export const restoreElements = (
 ): ExcalidrawElement[] => {
   return (elements || []).reduce((elements, element) => {
     // filtering out selection, which is legacy, no longer kept in elements,
-    //  and causing issues if retained
+    // and causing issues if retained
     if (element.type !== "selection" && !isInvisiblySmallElement(element)) {
       const migratedElement = restoreElement(element);
       if (migratedElement) {
@@ -161,11 +168,19 @@ const restoreAppState = (
     ...nextAppState,
     offsetLeft: appState.offsetLeft || 0,
     offsetTop: appState.offsetTop || 0,
+    // Migrates from previous version where appState.zoom was a number
+    zoom:
+      typeof appState.zoom === "number"
+        ? {
+            value: appState.zoom as NormalizedZoomValue,
+            translation: defaultAppState.zoom.translation,
+          }
+        : appState.zoom || defaultAppState.zoom,
   };
 };
 
 export const restore = (
-  data: ImportedDataState,
+  data: ImportedDataState | null,
   /**
    * Local AppState (`this.state` or initial state from localStorage) so that we
    * don't overwrite local state with default values (when values not
@@ -175,7 +190,7 @@ export const restore = (
   localAppState: Partial<AppState> | null | undefined,
 ): DataState => {
   return {
-    elements: restoreElements(data.elements),
-    appState: restoreAppState(data.appState, localAppState || null),
+    elements: restoreElements(data?.elements),
+    appState: restoreAppState(data?.appState, localAppState || null),
   };
 };

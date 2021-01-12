@@ -1,9 +1,11 @@
 {
   "labels": {
     "paste": "Lim inn",
+    "pasteCharts": "Lim inn diagrammer",
     "selectAll": "Vel alt",
     "multiSelect": "Legg til element i utval",
     "moveCanvas": "Flytt lerretet",
+    "cut": "Klipp ut",
     "copy": "Kopier",
     "copyAsPng": "Kopier til utklippstavla som PNG",
     "copyAsSvg": "Kopier til utklippstavla som SVG",
@@ -28,12 +30,17 @@
     "edges": "Kanter",
     "sharp": "Skarp",
     "round": "Rund",
+    "arrowheads": "Pilhovud",
+    "arrowhead_none": "Ingen",
+    "arrowhead_arrow": "Pil",
+    "arrowhead_bar": "Stolpe",
+    "arrowhead_dot": "Prikk",
     "fontSize": "Skriftstorleik",
     "fontFamily": "Skrifttype",
     "onlySelected": "Kun valde",
-    "withBackground": "Inkluder bakgrunn",
-    "exportEmbedScene": "",
-    "exportEmbedScene_details": "",
+    "withBackground": "Med bakgrunn",
+    "exportEmbedScene": "Bygg scena inn i eksportert fil",
+    "exportEmbedScene_details": "Scenedata vert lagra i den eksporterte PNG- eller SVG-fila slik at scena kan bli gjenopprettast frå den. Dette vil auke eksportert filstorleik.",
     "addWatermark": "Legg til «Laga med Excalidraw»",
     "handDrawn": "Handteikna",
     "normal": "Normal",
@@ -70,11 +77,21 @@
     "group": "Grupper utval",
     "ungroup": "Avgrupper utval",
     "collaborators": "Samarbeidarar",
-    "toggleGridMode": "Sla på/av rutenett",
+    "gridMode": "Rutevisning",
     "addToLibrary": "Legg til i bibliotek",
     "removeFromLibrary": "Fjern frå bibliotek",
     "libraryLoadingMessage": "Laster bibliotek...",
-    "loadingScene": "Laster scene..."
+    "libraries": "Blad gjennom bibliotek",
+    "loadingScene": "Laster scene...",
+    "align": "Juster",
+    "alignTop": "Juster til topp",
+    "alignBottom": "Juster til botn",
+    "alignLeft": "Juster til venstre",
+    "alignRight": "Juster til høgre",
+    "centerVertically": "Midtstill vertikalt",
+    "centerHorizontally": "Midtstill horisontalt",
+    "distributeHorizontally": "Sprei horisontalt",
+    "distributeVertically": "Sprei vertikalt"
   },
   "buttons": {
     "clearReset": "Tilbakestill lerretet",
@@ -83,7 +100,7 @@
     "exportToSvg": "Eksporter til SVG",
     "copyToClipboard": "Kopier til utklippstavla",
     "copyPngToClipboard": "Kopier PNG til utklippstavla",
-    "scale": "",
+    "scale": "Skaler",
     "save": "Lagre",
     "saveAs": "Lagre som",
     "load": "Opne",
@@ -101,14 +118,16 @@
     "redo": "Gjer om",
     "roomDialog": "Start sanntids-samarbeid",
     "createNewRoom": "Lag nytt rom",
-    "toggleFullScreen": "Slå på/av fullskjerm",
-    "toggleDarkMode": "Skru av/på skumringsmodus",
-    "toggleZenMode": "Slå på/av zen-modus",
+    "fullScreen": "Fullskjerm",
+    "darkMode": "Mørk modus",
+    "lightMode": "Lys modus",
+    "zenMode": "Zen-modus",
     "exitZenMode": "Avslutt zen-modus"
   },
   "alerts": {
     "clearReset": "Dette vil tømme lerretet. Er du sikker?",
     "couldNotCreateShareableLink": "Kunne ikkje lage delingslenke.",
+    "couldNotCreateShareableLinkTooBig": "Kunne ikkje opprette deleleg lenke: scena er for stor",
     "couldNotLoadInvalidFile": "Kunne ikkje laste inn ugyldig fil",
     "importBackendFailed": "Importering av backend feila.",
     "cannotExportEmptyCanvas": "Kan ikkje eksportere eit tomt lerret.",
@@ -118,8 +137,8 @@
     "loadSceneOverridePrompt": "Innlasting av ekstern teikning erstattar ditt eksisterande innhald. Ynskjer du å fortsette?",
     "errorLoadingLibrary": "Det oppstod ein feil under lastinga av tredjepartsbibliotek.",
     "confirmAddLibrary": "Dette vil legge til {{numShapes}} form(er) i biblioteket ditt. Er du sikker?",
-    "imageDoesNotContainScene": "",
-    "cannotRestoreFromImage": ""
+    "imageDoesNotContainScene": "Importering av bilder støttes ikkje for p. t.\n\nVil du importere ein scene? Dette bildet ser ikkje ut til å inneholde noen scene-data. Har du aktivert dette under eksporten?",
+    "cannotRestoreFromImage": "Scena kunne ikkje gjenopprettast frå denne biletfila"
   },
   "toolBar": {
     "selection": "Vel",
@@ -143,11 +162,17 @@
     "freeDraw": "Klikk og drag, slepp når du er ferdig",
     "text": "Tips: du kan òg leggje til tekst ved å dobbeltklikke kor som helst med utvalgsverktyet",
     "linearElementMulti": "Klikk på siste punkt eller trykk Escape eller Enter for å fullføre",
+    "lockAngle": "Du kan begrense vinkelen ved å holde nede SKIFT",
     "resize": "Du kan halde fram med forholdet ved å trykke SHIFT medan du endrar storleik,\ntrykk ALT for å endre storleiken frå midten",
     "rotate": "Du kan låse vinklane ved å halde SHIFT medan du roterer",
     "lineEditor_info": "Dobbeltklikk eller trykk Enter for å redigere punkt",
     "lineEditor_pointSelected": "Trykk på Slett for å fjerne punktet, CtrlOrCmd+D for å duplisere, eller dra for å flytte",
     "lineEditor_nothingSelected": "Vel eit punkt å flytte eller fjerne, eller hald Alt og klikk for å legge til nye punkt"
+  },
+  "canvasError": {
+    "cannotShowPreview": "Kan ikkje vise førehandsvising",
+    "canvasTooBig": "Lerretet er mogleg for stort.",
+    "canvasTooBigTip": "Tips: prøv å flytte elementa som er lengst frå kvarandre, litt nærare kvarandre."
   },
   "errorSplash": {
     "headingMain_pre": "Ein feil oppstod. Prøv ",
@@ -190,13 +215,22 @@
     "textNewLine": "Legg til ny linje (tekst)",
     "textFinish": "Fullfør redigering (tekst)",
     "zoomToFit": "Zoom for å sjå alle elementa",
+    "zoomToSelection": "Zoom til utval",
     "preventBinding": "Hindre pilkobling"
   },
   "encrypted": {
     "tooltip": "Teikningane dine er ende-til-ende-krypterte slik at Excalidraw sine serverar aldri får sjå dei."
   },
-  "charts": {
-    "noNumericColumn": "Du limte inn eit rekneark utan ei numerisk kolonne.",
-    "tooManyColumns": "Du limte inn eit rekneark med meir enn to kolonnar."
+  "stats": {
+    "angle": "Vinkel",
+    "element": "Element",
+    "elements": "Element",
+    "height": "Høgde",
+    "scene": "Scene",
+    "selected": "Valde",
+    "storage": "Lagring",
+    "title": "Statistikk for nerdar",
+    "total": "Totalt",
+    "width": "Breidde"
   }
 }

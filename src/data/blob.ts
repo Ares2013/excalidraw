@@ -1,12 +1,14 @@
 import { cleanAppStateForExport } from "../appState";
-import { restore } from "./restore";
-import { t } from "../i18n";
-import { AppState } from "../types";
-import { LibraryData, ImportedDataState } from "./types";
-import { calculateScrollCenter } from "../scene";
 import { MIME_TYPES } from "../constants";
+import { clearElementsForExport } from "../element";
+import { CanvasError } from "../errors";
+import { t } from "../i18n";
+import { calculateScrollCenter } from "../scene";
+import { AppState } from "../types";
+import { restore } from "./restore";
+import { ImportedDataState, LibraryData } from "./types";
 
-export const parseFileContents = async (blob: Blob | File) => {
+const parseFileContents = async (blob: Blob | File) => {
   let contents: string;
 
   if (blob.type === "image/png") {
@@ -54,13 +56,24 @@ export const parseFileContents = async (blob: Blob | File) => {
   return contents;
 };
 
-const getMimeType = (blob: Blob): string => {
-  if (blob.type) {
-    return blob.type;
+export const getMimeType = (blob: Blob | string): string => {
+  let name: string;
+  if (typeof blob === "string") {
+    name = blob;
+  } else {
+    if (blob.type) {
+      return blob.type;
+    }
+    name = blob.name || "";
   }
-  const name = blob.name || "";
   if (/\.(excalidraw|json)$/.test(name)) {
     return "application/json";
+  } else if (/\.png$/.test(name)) {
+    return "image/png";
+  } else if (/\.jpe?g$/.test(name)) {
+    return "image/jpeg";
+  } else if (/\.svg$/.test(name)) {
+    return "image/svg+xml";
   }
   return "";
 };
@@ -76,9 +89,9 @@ export const loadFromBlob = async (
     if (data.type !== "excalidraw") {
       throw new Error(t("alerts.couldNotLoadInvalidFile"));
     }
-    return restore(
+    const result = restore(
       {
-        elements: data.elements,
+        elements: clearElementsForExport(data.elements || []),
         appState: {
           appearance: localAppState?.appearance,
           fileHandle:
@@ -96,7 +109,10 @@ export const loadFromBlob = async (
       },
       localAppState,
     );
-  } catch {
+
+    return result;
+  } catch (error) {
+    console.error(error.message);
     throw new Error(t("alerts.couldNotLoadInvalidFile"));
   }
 };
@@ -108,4 +124,26 @@ export const loadLibraryFromBlob = async (blob: Blob) => {
     throw new Error(t("alerts.couldNotLoadInvalidFile"));
   }
   return data;
+};
+
+export const canvasToBlob = async (
+  canvas: HTMLCanvasElement,
+): Promise<Blob> => {
+  return new Promise((resolve, reject) => {
+    try {
+      canvas.toBlob((blob) => {
+        if (!blob) {
+          return reject(
+            new CanvasError(
+              t("canvasError.canvasTooBig"),
+              "CANVAS_POSSIBLY_TOO_BIG",
+            ),
+          );
+        }
+        resolve(blob);
+      });
+    } catch (error) {
+      reject(error);
+    }
+  });
 };

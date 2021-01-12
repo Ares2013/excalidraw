@@ -1,9 +1,8 @@
 import React from "react";
 import { AppState } from "../types";
 import { ActionManager } from "../actions/manager";
-import { t, setLanguage } from "../i18n";
+import { t } from "../i18n";
 import Stack from "./Stack";
-import { LanguageList } from "./LanguageList";
 import { showSelectedShapeActions } from "../element";
 import { NonDeletedExcalidrawElement } from "../element/types";
 import { FixedSideContainer } from "./FixedSideContainer";
@@ -12,10 +11,9 @@ import { HintViewer } from "./HintViewer";
 import { calculateScrollCenter } from "../scene";
 import { SelectedShapeActions, ShapesSwitcher } from "./Actions";
 import { Section } from "./Section";
-import { RoomDialog } from "./RoomDialog";
+import CollabButton from "./CollabButton";
 import { SCROLLBAR_WIDTH, SCROLLBAR_MARGIN } from "../scene/scrollbars";
 import { LockIcon } from "./LockIcon";
-import { LoadingMessage } from "./LoadingMessage";
 import { UserList } from "./UserList";
 import { BackgroundPickerAndDarkModeToggle } from "./BackgroundPickerAndDarkModeToggle";
 
@@ -26,11 +24,11 @@ type MobileMenuProps = {
   setAppState: React.Component<any, AppState>["setState"];
   elements: readonly NonDeletedExcalidrawElement[];
   libraryMenu: JSX.Element | null;
-  onRoomCreate: () => void;
-  onUsernameChange: (username: string) => void;
-  onRoomDestroy: () => void;
+  onCollabButtonClick?: () => void;
   onLockToggle: () => void;
   canvas: HTMLCanvasElement | null;
+  isCollaborating: boolean;
+  renderCustomFooter?: (isMobile: boolean) => JSX.Element;
 };
 
 export const MobileMenu = ({
@@ -40,14 +38,13 @@ export const MobileMenu = ({
   actionManager,
   exportButton,
   setAppState,
-  onRoomCreate,
-  onUsernameChange,
-  onRoomDestroy,
+  onCollabButtonClick,
   onLockToggle,
   canvas,
+  isCollaborating,
+  renderCustomFooter,
 }: MobileMenuProps) => (
   <>
-    {appState.isLoading && <LoadingMessage />}
     <FixedSideContainer side="top">
       <Section heading="shapes">
         {(heading) => (
@@ -83,7 +80,7 @@ export const MobileMenu = ({
         marginRight: SCROLLBAR_WIDTH + SCROLLBAR_MARGIN * 2,
       }}
     >
-      <Island padding={3}>
+      <Island padding={0}>
         {appState.openMenu === "canvas" ? (
           <Section className="App-mobile-menu" heading="canvasActions">
             <div className="panelColumn">
@@ -93,31 +90,19 @@ export const MobileMenu = ({
                 {actionManager.renderAction("saveAsScene")}
                 {exportButton}
                 {actionManager.renderAction("clearCanvas")}
-                <RoomDialog
-                  isCollaborating={appState.isCollaborating}
-                  collaboratorCount={appState.collaborators.size}
-                  username={appState.username}
-                  onUsernameChange={onUsernameChange}
-                  onRoomCreate={onRoomCreate}
-                  onRoomDestroy={onRoomDestroy}
-                  setErrorMessage={(message: string) =>
-                    setAppState({ errorMessage: message })
-                  }
-                />
+                {onCollabButtonClick && (
+                  <CollabButton
+                    isCollaborating={isCollaborating}
+                    collaboratorCount={appState.collaborators.size}
+                    onClick={onCollabButtonClick}
+                  />
+                )}
                 <BackgroundPickerAndDarkModeToggle
                   actionManager={actionManager}
                   appState={appState}
                   setAppState={setAppState}
                 />
-                <fieldset>
-                  <legend>{t("labels.language")}</legend>
-                  <LanguageList
-                    onChange={async (lng) => {
-                      await setLanguage(lng);
-                      setAppState({});
-                    }}
-                  />
-                </fieldset>
+                {renderCustomFooter?.(true)}
                 <fieldset>
                   <legend>{t("labels.collaborators")}</legend>
                   <UserList mobile>
@@ -159,7 +144,7 @@ export const MobileMenu = ({
             )}
             {actionManager.renderAction("deleteSelectedElements")}
           </div>
-          {appState.scrolledOutside && (
+          {appState.scrolledOutside && !appState.openMenu && (
             <button
               className="scroll-back-to-content"
               onClick={() => {

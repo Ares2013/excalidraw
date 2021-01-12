@@ -4,8 +4,14 @@ import clsx from "clsx";
 import { Popover } from "./Popover";
 
 import "./ContextMenu.scss";
+import {
+  getShortcutFromShortcutName,
+  ShortcutName,
+} from "../actions/shortcuts";
 
 type ContextMenuOption = {
+  checked?: boolean;
+  shortcutName: ShortcutName;
   label: string;
   action(): void;
 };
@@ -21,7 +27,6 @@ const ContextMenu = ({ options, onCloseRequest, top, left }: Props) => {
   const isDarkTheme = !!document
     .querySelector(".excalidraw")
     ?.classList.contains("Appearance_dark");
-
   return (
     <div
       className={clsx("excalidraw", {
@@ -38,9 +43,21 @@ const ContextMenu = ({ options, onCloseRequest, top, left }: Props) => {
           className="context-menu"
           onContextMenu={(event) => event.preventDefault()}
         >
-          {options.map((option, idx) => (
-            <li key={idx} onClick={onCloseRequest}>
-              <ContextMenuOption {...option} />
+          {options.map(({ action, checked, shortcutName, label }, idx) => (
+            <li data-testid={shortcutName} key={idx} onClick={onCloseRequest}>
+              <button
+                className={`context-menu-option 
+                ${shortcutName === "delete" ? "dangerous" : ""}
+                ${checked ? "checkmark" : ""}`}
+                onClick={action}
+              >
+                <div className="context-menu-option__label">{label}</div>
+                <div className="context-menu-option__shortcut">
+                  {shortcutName
+                    ? getShortcutFromShortcutName(shortcutName)
+                    : ""}
+                </div>
+              </button>
             </li>
           ))}
         </ul>
@@ -48,12 +65,6 @@ const ContextMenu = ({ options, onCloseRequest, top, left }: Props) => {
     </div>
   );
 };
-
-const ContextMenuOption = ({ label, action }: ContextMenuOption) => (
-  <button className="context-menu-option" onClick={action}>
-    {label}
-  </button>
-);
 
 let contextMenuNode: HTMLDivElement;
 const getContextMenuNode = (): HTMLDivElement => {

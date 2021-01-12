@@ -1,3 +1,4 @@
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 interface Document {
   fonts?: {
     ready?: Promise<void>;
@@ -10,7 +11,8 @@ interface Document {
 
 interface Window {
   ClipboardItem: any;
-  __EXCALIDRAW_SHA__: string;
+  __EXCALIDRAW_SHA__: string | undefined;
+  gtag: Function;
 }
 
 // https://github.com/facebook/create-react-app/blob/ddcb7d5/packages/react-scripts/lib/react-app.d.ts
@@ -40,6 +42,9 @@ type ResolutionType<T extends (...args: any) => any> = T extends (
 
 // https://github.com/krzkaczor/ts-essentials
 type MarkOptional<T, K extends keyof T> = Omit<T, K> & Partial<Pick<T, K>>;
+
+type MarkRequired<T, RK extends keyof T> = Exclude<T, RK> &
+  Required<Pick<T, RK>>;
 
 // PNG encoding/decoding
 // -----------------------------------------------------------------------------

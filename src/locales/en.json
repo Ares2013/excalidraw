@@ -1,9 +1,11 @@
 {
   "labels": {
     "paste": "Paste",
+    "pasteCharts": "Paste charts",
     "selectAll": "Select all",
     "multiSelect": "Add element to selection",
     "moveCanvas": "Move canvas",
+    "cut": "Cut",
     "copy": "Copy",
     "copyAsPng": "Copy to clipboard as PNG",
     "copyAsSvg": "Copy to clipboard as SVG",
@@ -28,10 +30,15 @@
     "edges": "Edges",
     "sharp": "Sharp",
     "round": "Round",
+    "arrowheads": "Arrowheads",
+    "arrowhead_none": "None",
+    "arrowhead_arrow": "Arrow",
+    "arrowhead_bar": "Bar",
+    "arrowhead_dot": "Dot",
     "fontSize": "Font size",
     "fontFamily": "Font family",
     "onlySelected": "Only selected",
-    "withBackground": "With Background",
+    "withBackground": "With background",
     "exportEmbedScene": "Embed scene into exported file",
     "exportEmbedScene_details": "Scene data will be saved into the exported PNG/SVG file so that the scene can be restored from it.\nWill increase exported file size.",
     "addWatermark": "Add \"Made with Excalidraw\"",
@@ -70,11 +77,21 @@
     "group": "Group selection",
     "ungroup": "Ungroup selection",
     "collaborators": "Collaborators",
-    "toggleGridMode": "Toggle grid mode",
+    "gridMode": "Grid mode",
     "addToLibrary": "Add to library",
     "removeFromLibrary": "Remove from library",
     "libraryLoadingMessage": "Loading library...",
-    "loadingScene": "Loading scene..."
+    "libraries": "Browse libraries",
+    "loadingScene": "Loading scene...",
+    "align": "Align",
+    "alignTop": "Align top",
+    "alignBottom": "Align bottom",
+    "alignLeft": "Align left",
+    "alignRight": "Align right",
+    "centerVertically": "Center vertically",
+    "centerHorizontally": "Center horizontally",
+    "distributeHorizontally": "Distribute horizontally",
+    "distributeVertically": "Distribute vertically"
   },
   "buttons": {
     "clearReset": "Reset the canvas",
@@ -101,9 +118,10 @@
     "redo": "Redo",
     "roomDialog": "Start live collaboration",
     "createNewRoom": "Create new room",
-    "toggleFullScreen": "Toggle full screen",
-    "toggleDarkMode": "Toggle dark mode",
-    "toggleZenMode": "Toggle zen mode",
+    "fullScreen": "Full screen",
+    "darkMode": "Dark mode",
+    "lightMode": "Light mode",
+    "zenMode": "Zen mode",
     "exitZenMode": "Exit zen mode"
   },
   "alerts": {
@@ -119,7 +137,7 @@
     "loadSceneOverridePrompt": "Loading external drawing will replace your existing content. Do you wish to continue?",
     "errorLoadingLibrary": "There was an error loading the third party library.",
     "confirmAddLibrary": "This will add {{numShapes}} shape(s) to your library. Are you sure?",
-    "imageDoesNotContainScene": "Image file doesn't contain scene data. Have you enabled this during export?",
+    "imageDoesNotContainScene": "Importing images isn't supported at the moment.\n\nDid you want to import a scene? This image does not seem to contain any scene data. Have you enabled this during export?",
     "cannotRestoreFromImage": "Scene couldn't be restored from this image file"
   },
   "toolBar": {
@@ -144,11 +162,17 @@
     "freeDraw": "Click and drag, release when you're finished",
     "text": "Tip: you can also add text by double-clicking anywhere with the selection tool",
     "linearElementMulti": "Click on last point or press Escape or Enter to finish",
+    "lockAngle": "You can constrain angle by holding SHIFT",
     "resize": "You can constrain proportions by holding SHIFT while resizing,\nhold ALT to resize from the center",
     "rotate": "You can constrain angles by holding SHIFT while rotating",
     "lineEditor_info": "Double-click or press Enter to edit points",
     "lineEditor_pointSelected": "Press Delete to remove point, CtrlOrCmd+D to duplicate, or drag to move",
     "lineEditor_nothingSelected": "Select a point to move or remove, or hold Alt and click to add new points"
+  },
+  "canvasError": {
+    "cannotShowPreview": "Cannot show preview",
+    "canvasTooBig": "The canvas may be too big.",
+    "canvasTooBigTip": "Tip: try moving the farthest elements a bit closer together."
   },
   "errorSplash": {
     "headingMain_pre": "Encountered an error. Try ",
@@ -191,13 +215,22 @@
     "textNewLine": "Add new line (text)",
     "textFinish": "Finish editing (text)",
     "zoomToFit": "Zoom to fit all elements",
+    "zoomToSelection": "Zoom to selection",
     "preventBinding": "Prevent arrow binding"
   },
   "encrypted": {
     "tooltip": "Your drawings are end-to-end encrypted so Excalidraw's servers will never see them."
   },
-  "charts": {
-    "noNumericColumn": "You pasted a spreadsheet without a numeric column.",
-    "tooManyColumns": "You pasted a spreadsheet with more than two columns."
+  "stats": {
+    "angle": "Angle",
+    "element": "Element",
+    "elements": "Elements",
+    "height": "Height",
+    "scene": "Scene",
+    "selected": "Selected",
+    "storage": "Storage",
+    "title": "Stats for nerds",
+    "total": "Total",
+    "width": "Width"
   }
 }

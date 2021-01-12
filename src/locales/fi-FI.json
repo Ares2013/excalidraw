@@ -1,9 +1,11 @@
 {
   "labels": {
     "paste": "Liitä",
+    "pasteCharts": "Liitä kaaviot",
     "selectAll": "Valitse kaikki",
     "multiSelect": "Lisää kohde valintaan",
     "moveCanvas": "Siirrä piirtoaluetta",
+    "cut": "Leikkaa",
     "copy": "Kopioi",
     "copyAsPng": "Kopioi leikepöydälle PNG-tiedostona",
     "copyAsSvg": "Kopioi leikepöydälle SVG-tiedostona",
@@ -28,6 +30,11 @@
     "edges": "Reunat",
     "sharp": "Terävä",
     "round": "Pyöreä",
+    "arrowheads": "Nuolenkärjet",
+    "arrowhead_none": "Ei mitään",
+    "arrowhead_arrow": "Nuoli",
+    "arrowhead_bar": "Tasapää",
+    "arrowhead_dot": "Piste",
     "fontSize": "Kirjasinkoko",
     "fontFamily": "Kirjasintyyppi",
     "onlySelected": "Vain valitut",
@@ -54,7 +61,7 @@
     "architect": "Arkkitehti",
     "artist": "Taiteilija",
     "cartoonist": "Sarjakuva",
-    "fileTitle": "Tiedostonimi",
+    "fileTitle": "Tiedoston otsikko",
     "colorPicker": "Värin valinta",
     "canvasBackground": "Piirtoalueen tausta",
     "drawingCanvas": "Piirtoalue",
@@ -70,11 +77,21 @@
     "group": "Ryhmitä valinta",
     "ungroup": "Pura valittu ryhmä",
     "collaborators": "Yhteistyökumppanit",
-    "toggleGridMode": "Ruudukko päälle/pois",
+    "gridMode": "Ruudukkotila",
     "addToLibrary": "Lisää kirjastoon",
     "removeFromLibrary": "Poista kirjastosta",
     "libraryLoadingMessage": "Ladataan kirjastoa...",
-    "loadingScene": "Ladataan työtä..."
+    "libraries": "Selaa kirjastoja",
+    "loadingScene": "Ladataan työtä...",
+    "align": "Tasaa",
+    "alignTop": "Tasaa ylös",
+    "alignBottom": "Tasaa alas",
+    "alignLeft": "Tasaa vasemmalle",
+    "alignRight": "Tasaa oikealle",
+    "centerVertically": "Keskitä pystysuunnassa",
+    "centerHorizontally": "Keskitä vaakasuunnassa",
+    "distributeHorizontally": "Jaa vaakasuunnassa",
+    "distributeVertically": "Jaa pystysuunnassa"
   },
   "buttons": {
     "clearReset": "Tyhjennä piirtoalue",
@@ -101,14 +118,16 @@
     "redo": "Tee uudelleen",
     "roomDialog": "Aloita live-yhteistyö",
     "createNewRoom": "Luo huone",
-    "toggleFullScreen": "Koko näytön tila päälle/pois",
-    "toggleDarkMode": "Pimeä tila päälle/pois",
-    "toggleZenMode": "Zen-tila päälle",
+    "fullScreen": "Koko näyttö",
+    "darkMode": "Tumma tila",
+    "lightMode": "Vaalea tila",
+    "zenMode": "Zen-tila",
     "exitZenMode": "Poistu zen-tilasta"
   },
   "alerts": {
     "clearReset": "Tämä tyhjentää koko piirtoalueen. Jatketaanko?",
     "couldNotCreateShareableLink": "Jaettavan linkin luominen epäonnistui.",
+    "couldNotCreateShareableLinkTooBig": "Jaettavaa linkkiä ei voitu luoda: teos on liian suuri",
     "couldNotLoadInvalidFile": "Virheellistä tiedostoa ei voitu avata",
     "importBackendFailed": "Palvelimelta tuonti epäonnistui.",
     "cannotExportEmptyCanvas": "Tyhjää piirtoaluetta ei voi viedä.",
@@ -118,7 +137,7 @@
     "loadSceneOverridePrompt": "Ulkopuolisen piirroksen lataaminen korvaa nykyisen sisältösi. Haluatko jatkaa?",
     "errorLoadingLibrary": "Kolmannen osapuolen kirjastoa ladattaessa tapahtui virhe.",
     "confirmAddLibrary": "Tämä lisää {{numShapes}} muotoa kirjastoosi. Oletko varma?",
-    "imageDoesNotContainScene": "Kuvatiedosto ei sisällä teostietoja. Valitsitko sisällyttää ne tallennusvaiheessa?",
+    "imageDoesNotContainScene": "Kuvien lisääminen ei ole tällä hetkellä mahdollista.\n\nHaluatko tuoda piirroksen? Tämä kuva ei näytä sisältävän tarvittavia tietoja. Oletko ottanut piirrostietojen tallennuksen käyttöön viennin aikana?",
     "cannotRestoreFromImage": "Teosta ei voitu palauttaa tästä kuvatiedostosta"
   },
   "toolBar": {
@@ -143,11 +162,17 @@
     "freeDraw": "Paina ja raahaa, päästä irti kun olet valmis",
     "text": "Vinkki: voit myös lisätä tekstiä kaksoisnapsauttamalla mihin tahansa valintatyökalulla",
     "linearElementMulti": "Klikkaa viimeistä pistettä, paina Escape tai paina Enter lopettaaksesi",
+    "lockAngle": "Voit rajoittaa kulmaa pitämällä SHIFT pohjassa",
     "resize": "Voit rajoittaa mittasuhteet pitämällä SHIFT pohjassa kun muutat kokoa, pidä ALT pohjassa muuttaaksesi kokoa keskipisteen suhteen",
     "rotate": "Voit rajoittaa kulman pitämällä SHIFT pohjassa pyörittäessäsi",
     "lineEditor_info": "Kaksoisnapauta tai paina Enter muokataksesi pisteitä",
     "lineEditor_pointSelected": "Paina Delete poistaaksesi pisteen, CtrlOrCmd+D monistaaksesi, tai raahaa liikuttaaksesi",
     "lineEditor_nothingSelected": "Valitse liikutettava tai poistettava piste, tai pidä Alt pohjassa ja napauta lisätäksesi uusia pisteitä"
+  },
+  "canvasError": {
+    "cannotShowPreview": "Esikatselua ei voitu näyttää",
+    "canvasTooBig": "Piirtoalue saattaa olla liian suuri.",
+    "canvasTooBigTip": "Vinkki: yritä siirtää kaukaisimpia elementtejä hieman lähemmäs toisiaan."
   },
   "errorSplash": {
     "headingMain_pre": "Tapahtui virhe. Yritä ",
@@ -190,13 +215,22 @@
     "textNewLine": "Lisää uusi rivi (teksti)",
     "textFinish": "Lopeta muokkaus (teksti)",
     "zoomToFit": "Zoomaa kaikki elementit näkyviin",
+    "zoomToSelection": "Zoomaa valintaan",
     "preventBinding": "Estä nuolten sitominen"
   },
   "encrypted": {
     "tooltip": "Piirroksesi ovat päästä päähän salattuja, joten Excalidrawin palvelimet eivät koskaan näe niitä."
   },
-  "charts": {
-    "noNumericColumn": "Liitit taulukon ilman lukuja sisältävää saraketta.",
-    "tooManyColumns": "Liitit taulukon, jossa on enemmän kuin kaksi saraketta."
+  "stats": {
+    "angle": "Kulma",
+    "element": "Elementti",
+    "elements": "Elementit",
+    "height": "Korkeus",
+    "scene": "Teos",
+    "selected": "Valitut",
+    "storage": "Tallennustila",
+    "title": "Nörttien tilastot",
+    "total": "Yhteensä",
+    "width": "Leveys"
   }
 }

@@ -92,8 +92,8 @@ export const actionFinalize = register({
           const linePoints = multiPointElement.points;
           const firstPoint = linePoints[0];
           mutateElement(multiPointElement, {
-            points: linePoints.map((point, i) =>
-              i === linePoints.length - 1
+            points: linePoints.map((point, index) =>
+              index === linePoints.length - 1
                 ? ([firstPoint[0], firstPoint[1]] as const)
                 : point,
             ),
@@ -118,11 +118,14 @@ export const actionFinalize = register({
         );
       }
 
-      if (!appState.elementLocked) {
+      if (!appState.elementLocked && appState.elementType !== "draw") {
         appState.selectedElementIds[multiPointElement.id] = true;
       }
     }
-    if (!appState.elementLocked || !multiPointElement) {
+    if (
+      (!appState.elementLocked && appState.elementType !== "draw") ||
+      !multiPointElement
+    ) {
       resetCursor();
     }
     return {
@@ -130,7 +133,8 @@ export const actionFinalize = register({
       appState: {
         ...appState,
         elementType:
-          appState.elementLocked && multiPointElement
+          (appState.elementLocked || appState.elementType === "draw") &&
+          multiPointElement
             ? appState.elementType
             : "selection",
         draggingElement: null,
@@ -139,7 +143,9 @@ export const actionFinalize = register({
         startBoundElement: null,
         suggestedBindings: [],
         selectedElementIds:
-          multiPointElement && !appState.elementLocked
+          multiPointElement &&
+          !appState.elementLocked &&
+          appState.elementType !== "draw"
             ? {
                 ...appState.selectedElementIds,
                 [multiPointElement.id]: true,

@@ -1,0 +1,14 @@
+name: Build Docker image
+
+on:
+  push:
+    branches:
+      - master
+
+jobs:
+  build-docker:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v1
+      - run: docker build -t excalidraw .

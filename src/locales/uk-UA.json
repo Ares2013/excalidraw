@@ -1,9 +1,11 @@
 {
   "labels": {
     "paste": "Вставити",
+    "pasteCharts": "Вставити діаграми",
     "selectAll": "Вибрати все",
     "multiSelect": "Додати елемент до вибраного",
     "moveCanvas": "Перемістити полотно",
+    "cut": "Вирізати",
     "copy": "Копіювати",
     "copyAsPng": "Копіювати як PNG",
     "copyAsSvg": "Копіювати як SVG",
@@ -28,12 +30,17 @@
     "edges": "Краї",
     "sharp": "Гострі",
     "round": "Круглі",
+    "arrowheads": "Закінчення стрілки",
+    "arrowhead_none": "Жоден",
+    "arrowhead_arrow": "Стрілка",
+    "arrowhead_bar": "Колона",
+    "arrowhead_dot": "Точка",
     "fontSize": "Розмір шрифту",
     "fontFamily": "Шрифт",
     "onlySelected": "Тільки вибране",
-    "withBackground": "З тлом",
-    "exportEmbedScene": "",
-    "exportEmbedScene_details": "",
+    "withBackground": "З фоном",
+    "exportEmbedScene": "Вставити сцену в експортований файл",
+    "exportEmbedScene_details": "Дані сцени будуть збережені в експортований файл PNG/SVG. Ця сцена може бути відновленна з нього, однак це збільшить розмір експортованого файлу.",
     "addWatermark": "Додати «Накреслене в Excalidraw»",
     "handDrawn": "Рукописний",
     "normal": "Звичайний",
@@ -63,18 +70,28 @@
     "language": "Мова",
     "createRoom": "Поділитися сесією для спільної роботи",
     "duplicateSelection": "Дублювати",
-    "untitled": "Без-назви",
+    "untitled": "Без назви",
     "name": "Ім’я",
     "yourName": "Ваше ім’я",
     "madeWithExcalidraw": "Накреслене в Excalidraw",
     "group": "Групувати виділене",
     "ungroup": "Розгрупувати виділене",
     "collaborators": "Співавтори",
-    "toggleGridMode": "Режим сітки",
+    "gridMode": "Режим сітки",
     "addToLibrary": "Додати до бібліотеки",
     "removeFromLibrary": "Видалити з бібліотеки",
     "libraryLoadingMessage": "Завантажити бібліотеку...",
-    "loadingScene": "Завантаження сцени..."
+    "libraries": "Огляд бібліотек",
+    "loadingScene": "Завантаження сцени...",
+    "align": "Вирівнювання",
+    "alignTop": "Вирівняти по верхньому краю",
+    "alignBottom": "Вирівняти по нижньому краю",
+    "alignLeft": "Вирівняти по лівому краю",
+    "alignRight": "Вирівнювання по правому краю",
+    "centerVertically": "Центрувати по вертикалі",
+    "centerHorizontally": "Центрувати по горизонталі",
+    "distributeHorizontally": "Розподілити по горизонталі",
+    "distributeVertically": "Розподілити вертикально"
   },
   "buttons": {
     "clearReset": "Очистити полотно",
@@ -83,7 +100,7 @@
     "exportToSvg": "Експортувати в SVG",
     "copyToClipboard": "Скопіювати до буферу обміну",
     "copyPngToClipboard": "Скопіювати PNG до буферу обміну",
-    "scale": "",
+    "scale": "Масштаб",
     "save": "Зберегти",
     "saveAs": "Зберегти як",
     "load": "Завантажити",
@@ -101,14 +118,16 @@
     "redo": "Повторити",
     "roomDialog": "Відкрити сесію спільної роботи",
     "createNewRoom": "Створити нову кімнату",
-    "toggleFullScreen": "Повноекранний режим",
-    "toggleDarkMode": "Переключити темний режим",
-    "toggleZenMode": "Дзен-режим",
+    "fullScreen": "Повноекранний режим",
+    "darkMode": "Темний режим",
+    "lightMode": "Світлий режим",
+    "zenMode": "Режим Дзен",
     "exitZenMode": "Вийти з дзен-режиму"
   },
   "alerts": {
     "clearReset": "Це очистить все полотно. Впевнені?",
     "couldNotCreateShareableLink": "Не вдалося створити посилання.",
+    "couldNotCreateShareableLinkTooBig": "Не вдалося створити посилання для обміну: сцена занадто велика",
     "couldNotLoadInvalidFile": "Файл з помилками не відкрився",
     "importBackendFailed": "Імпортування невдале.",
     "cannotExportEmptyCanvas": "Не вийшло експортувати пусте полотно.",
@@ -118,8 +137,8 @@
     "loadSceneOverridePrompt": "Завантаження зовнішнього креслення замінить ваш наявний контент. Продовжити?",
     "errorLoadingLibrary": "Помилка при завантаженні сторонньої бібліотеки.",
     "confirmAddLibrary": "Це призведе до додавання {{numShapes}} фігур до вашої бібліотеки. Ви впевнені?",
-    "imageDoesNotContainScene": "",
-    "cannotRestoreFromImage": ""
+    "imageDoesNotContainScene": "Імпортування зображень на даний момент не підтримується.\n\nЧи хочете ви імпортувати сцену? Це зображення не містить ніяких даних сцен. Ви увімкнули це під час експорту?",
+    "cannotRestoreFromImage": "Сцена не може бути відновлена з цього файлу зображення"
   },
   "toolBar": {
     "selection": "Виділення",
@@ -143,11 +162,17 @@
     "freeDraw": "Натисніть і потягніть, відпустіть коли завершите",
     "text": "Порада: можна також додати текст, двічі клацнувши по будь-якому місці інструментом вибору",
     "linearElementMulti": "Натисніть на останню точку, клацніть Esc або Enter щоб завершити",
+    "lockAngle": "Ви можете обмежити кут, утримуюючи SHIFT",
     "resize": "Ви можете зберегти пропорції, утримуючи SHIFT під час зміни розміру,\nутримуйте ALT для змінення розміру від центру",
     "rotate": "Ви можете обмежити кути, утримуючи SHIFT під час обертання",
     "lineEditor_info": "Двічі клацніть або натисніть Enter щоб редагувати точки",
     "lineEditor_pointSelected": "Натисніть Видалити, щоб видалити точку, CtrlOrCmd+D для дублювання, або перетягніть, щоб переміститися",
     "lineEditor_nothingSelected": "Виберіть точку для переміщення чи видалення, або утримуйте Alt і натисніть, щоб додати нові точки"
+  },
+  "canvasError": {
+    "cannotShowPreview": "Не вдається показати попередній перегляд",
+    "canvasTooBig": "Полотно може бути завеликим.",
+    "canvasTooBigTip": "Порада: спробуйте підсунути найвіддаленіші елементи ближче один до одного."
   },
   "errorSplash": {
     "headingMain_pre": "Сталася помилка. Спробуйте ",
@@ -190,13 +215,22 @@
     "textNewLine": "Додати новий рядок (текст)",
     "textFinish": "Завершити редагування (текст)",
     "zoomToFit": "Збільшити щоб умістити все",
+    "zoomToSelection": "Перейти до виділеного",
     "preventBinding": "Запобігти зв'язування зі стрілками"
   },
   "encrypted": {
     "tooltip": "Ваші креслення захищені наскрізним шифруванням — сервери Excalidraw ніколи їх не побачать."
   },
-  "charts": {
-    "noNumericColumn": "Ви вставили таблицю без числової колонки.",
-    "tooManyColumns": "Ви вставляли таблицю з більш ніж двома колонками."
+  "stats": {
+    "angle": "Кут",
+    "element": "Елемент",
+    "elements": "Елементи",
+    "height": "Висота",
+    "scene": "Сцена",
+    "selected": "Вибраний",
+    "storage": "Сховище",
+    "title": "Статистика",
+    "total": "Всього",
+    "width": "Ширина"
   }
 }

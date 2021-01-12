@@ -1,9 +1,11 @@
 {
   "labels": {
     "paste": "Klistra in",
+    "pasteCharts": "Klistra in diagram",
     "selectAll": "Markera alla",
     "multiSelect": "Lägg till element till markering",
     "moveCanvas": "Flytta canvas",
+    "cut": "Klipp ut",
     "copy": "Kopiera",
     "copyAsPng": "Kopiera till urklipp som PNG",
     "copyAsSvg": "Kopiera till urklipp som SVG",
@@ -28,6 +30,11 @@
     "edges": "Kanter",
     "sharp": "Skarp",
     "round": "Rund",
+    "arrowheads": "Pilhuvuden",
+    "arrowhead_none": "Inga",
+    "arrowhead_arrow": "Pil",
+    "arrowhead_bar": "Stolpe",
+    "arrowhead_dot": "Punkt",
     "fontSize": "Teckenstorlek",
     "fontFamily": "Teckensnitt",
     "onlySelected": "Endast markering",
@@ -70,11 +77,21 @@
     "group": "Gruppera markering",
     "ungroup": "Avgruppera markering",
     "collaborators": "Medarbetare",
-    "toggleGridMode": "Växla rutnätsläge",
+    "gridMode": "Rutnätsläge",
     "addToLibrary": "Lägg till i biblioteket",
     "removeFromLibrary": "Ta bort från bibliotek",
     "libraryLoadingMessage": "Laddar bibliotek...",
-    "loadingScene": "Laddar scen..."
+    "libraries": "Bläddra i bibliotek",
+    "loadingScene": "Laddar scen...",
+    "align": "Justera",
+    "alignTop": "Justera överkant",
+    "alignBottom": "Justera underkant",
+    "alignLeft": "Justera vänster",
+    "alignRight": "Justera höger",
+    "centerVertically": "Centrera vertikalt",
+    "centerHorizontally": "Centrera horisontellt",
+    "distributeHorizontally": "Fördela horisontellt",
+    "distributeVertically": "Fördela vertikalt"
   },
   "buttons": {
     "clearReset": "Återställ canvasen",
@@ -101,14 +118,16 @@
     "redo": "Gör om",
     "roomDialog": "Starta live-samarbete",
     "createNewRoom": "Skapa ett nytt rum",
-    "toggleFullScreen": "Växla fullskärmsläge",
-    "toggleDarkMode": "Växla mörkt läge",
-    "toggleZenMode": "Växla zen-läge",
+    "fullScreen": "Helskärm",
+    "darkMode": "Mörkt läge",
+    "lightMode": "Ljust läge",
+    "zenMode": "Zen-läge",
     "exitZenMode": "Gå ur zen-läge"
   },
   "alerts": {
     "clearReset": "Detta rensar hela canvasen. Är du säker?",
     "couldNotCreateShareableLink": "Kunde inte skapa delbar länk.",
+    "couldNotCreateShareableLinkTooBig": "Kunde inte skapa delbar länk: skissen är för stor",
     "couldNotLoadInvalidFile": "Kunde inte ladda ogiltig fil",
     "importBackendFailed": "Importering från backend misslyckades.",
     "cannotExportEmptyCanvas": "Kan inte exportera tom canvas.",
@@ -118,7 +137,7 @@
     "loadSceneOverridePrompt": "Laddning av extern skiss kommer att ersätta ditt befintliga innehåll. Vill du fortsätta?",
     "errorLoadingLibrary": "Fel vid inläsning av tredjeparts bibliotek.",
     "confirmAddLibrary": "Detta kommer att lägga till {{numShapes}} form(er) till ditt bibliotek. Är du säker?",
-    "imageDoesNotContainScene": "Bildfilen innehåller inte skissdata. Har du aktiverat detta under export?",
+    "imageDoesNotContainScene": "Importering av bilder stöds inte just nu.\n\nVill du importera en skiss? Den här bilden verkar inte innehålla någon skissdata. Har du aktiverat detta under export?",
     "cannotRestoreFromImage": "Skiss kunde inte återställas från denna bildfil"
   },
   "toolBar": {
@@ -143,11 +162,17 @@
     "freeDraw": "Klicka och dra, släpp när du är klar",
     "text": "Tips: du kan också lägga till text genom att dubbelklicka var som helst med markeringsverktyget",
     "linearElementMulti": "Klicka på sista punkten eller tryck Escape eller Enter för att avsluta",
+    "lockAngle": "Du kan begränsa vinkeln genom att hålla SKIFT",
     "resize": "Du kan behålla proportioner genom att hålla SHIFT medan du ändrar storlek,\nhåller du ALT ändras storlek relativt mitten",
     "rotate": "Du kan begränsa vinklar genom att hålla SHIFT medan du roterar",
     "lineEditor_info": "Dubbelklicka eller tryck på Enter för att redigera punkter",
     "lineEditor_pointSelected": "Tryck på Ta bort för att ta bort punkt, Ctrl + D eller Cmd + D för att duplicera, eller dra för att flytta",
     "lineEditor_nothingSelected": "Välj en punkt att flytta eller ta bort, eller håll ned ALT och klicka för att lägga till nya punkter"
+  },
+  "canvasError": {
+    "cannotShowPreview": "Kan inte visa förhandsgranskning",
+    "canvasTooBig": "Canvasen kan vara för stor.",
+    "canvasTooBigTip": "Tips: prova att flytta de mest avlägsna elementen lite närmare varandra."
   },
   "errorSplash": {
     "headingMain_pre": "Ett fel uppstod. Försök ",
@@ -164,7 +189,7 @@
   },
   "roomDialog": {
     "desc_intro": "Du kan bjuda in personer till din nuvarande skiss för att samarbeta med dig.",
-    "desc_privacy": "Oroa dig inte, sessionen använder kryptering från ände till ände, så vad du än ritar kommer att förbli privat. Inte ens vår server kommer att kunna se vad skissar.",
+    "desc_privacy": "Oroa dig inte, sessionen använder kryptering från ände till ände, så vad du än ritar kommer att förbli privat. Inte ens vår server kommer att kunna se vad du skissar.",
     "button_startSession": "Starta sessionen",
     "button_stopSession": "Stoppa session",
     "desc_inProgressIntro": "Nu pågår en live-samarbetssession.",
@@ -186,17 +211,26 @@
     "view": "Visa",
     "blog": "Läs vår blogg",
     "howto": "Följ våra guider",
-    "github": "Hittat ett problem? Skicka",
+    "github": "Hittat ett problem? Rapportera",
     "textNewLine": "Lägg till ny rad (text)",
     "textFinish": "Slutför redigering (text)",
     "zoomToFit": "Zooma för att rymma alla element",
+    "zoomToSelection": "Zooma till markering",
     "preventBinding": "Förhindra pilbindning"
   },
   "encrypted": {
     "tooltip": "Dina skisser är krypterade från ände till ände så Excalidraws servrar kommer aldrig att se dem."
   },
-  "charts": {
-    "noNumericColumn": "Du klistrade in ett kalkylblad utan en numerisk kolumn.",
-    "tooManyColumns": "Du klistrade in ett kalkylblad med mer än två kolumner."
+  "stats": {
+    "angle": "Vinkel",
+    "element": "Element",
+    "elements": "Element",
+    "height": "Höjd",
+    "scene": "Skiss",
+    "selected": "Valda",
+    "storage": "Lagring",
+    "title": "Statistik för nördar",
+    "total": "Totalt",
+    "width": "Bredd"
   }
 }

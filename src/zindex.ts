@@ -1,7 +1,7 @@
-import { AppState } from "./types";
 import { ExcalidrawElement } from "./element/types";
 import { getElementsInGroup } from "./groups";
-import { findLastIndex, findIndex } from "./utils";
+import { AppState } from "./types";
+import { findIndex, findLastIndex } from "./utils";
 
 /**
  * Returns indices of elements to move based on selected elements.
@@ -15,18 +15,18 @@ const getIndicesToMove = (
   let selectedIndices: number[] = [];
   let deletedIndices: number[] = [];
   let includeDeletedIndex = null;
-  let i = -1;
-  while (++i < elements.length) {
-    if (appState.selectedElementIds[elements[i].id]) {
+  let index = -1;
+  while (++index < elements.length) {
+    if (appState.selectedElementIds[elements[index].id]) {
       if (deletedIndices.length) {
         selectedIndices = selectedIndices.concat(deletedIndices);
         deletedIndices = [];
       }
-      selectedIndices.push(i);
-      includeDeletedIndex = i + 1;
-    } else if (elements[i].isDeleted && includeDeletedIndex === i) {
-      includeDeletedIndex = i + 1;
-      deletedIndices.push(i);
+      selectedIndices.push(index);
+      includeDeletedIndex = index + 1;
+    } else if (elements[index].isDeleted && includeDeletedIndex === index) {
+      includeDeletedIndex = index + 1;
+      deletedIndices.push(index);
     } else {
       deletedIndices = [];
     }
@@ -62,7 +62,7 @@ const getTargetIndex = (
       return false;
     }
     // if we're editing group, find closest sibling irrespective of whether
-    //  there's a different-group element between them (for legacy reasons)
+    // there's a different-group element between them (for legacy reasons)
     if (appState.editingGroupId) {
       return element.groupIds.includes(appState.editingGroupId);
     }
@@ -106,7 +106,7 @@ const getTargetIndex = (
 
   if (elementsInSiblingGroup.length) {
     // assumes getElementsInGroup() returned elements are sorted
-    //  by zIndex (ascending)
+    // by zIndex (ascending)
     return direction === "left"
       ? elements.indexOf(elementsInSiblingGroup[0])
       : elements.indexOf(
@@ -187,7 +187,8 @@ const shiftElementsToEnd = (
   const targetElements: ExcalidrawElement[] = [];
   const displacedElements: ExcalidrawElement[] = [];
 
-  let leadingIndex, trailingIndex;
+  let leadingIndex: number;
+  let trailingIndex: number;
   if (direction === "left") {
     if (appState.editingGroupId) {
       const groupElements = getElementsInGroup(

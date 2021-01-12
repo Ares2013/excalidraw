@@ -1,50 +1,46 @@
+import clsx from "clsx";
 import React, {
+  RefObject,
+  useCallback,
+  useEffect,
   useRef,
   useState,
-  RefObject,
-  useEffect,
-  useCallback,
 } from "react";
-import { showSelectedShapeActions } from "../element";
-import { calculateScrollCenter, getSelectedElements } from "../scene";
-import { exportCanvas } from "../data";
-
-import { AppState, LibraryItems, LibraryItem } from "../types";
-import { NonDeletedExcalidrawElement } from "../element/types";
-
 import { ActionManager } from "../actions/manager";
-import { Island } from "./Island";
-import Stack from "./Stack";
-import { FixedSideContainer } from "./FixedSideContainer";
-import { UserList } from "./UserList";
-import { LockIcon } from "./LockIcon";
-import { ExportDialog, ExportCB } from "./ExportDialog";
-import { LanguageList } from "./LanguageList";
-import { t, languages, setLanguage } from "../i18n";
-import { HintViewer } from "./HintViewer";
-import useIsMobile from "../is-mobile";
-
-import { ExportType } from "../scene/types";
-import { MobileMenu } from "./MobileMenu";
-import { ZoomActions, SelectedShapeActions, ShapesSwitcher } from "./Actions";
-import { Section } from "./Section";
-import { RoomDialog } from "./RoomDialog";
-import { ErrorDialog } from "./ErrorDialog";
-import { ShortcutsDialog } from "./ShortcutsDialog";
-import { LoadingMessage } from "./LoadingMessage";
 import { CLASSES } from "../constants";
-import { shield, exportFile, load } from "./icons";
+import { exportCanvas } from "../data";
+import { importLibraryFromJSON, saveLibraryAsJSON } from "../data/json";
+import { Library } from "../data/library";
+import { showSelectedShapeActions } from "../element";
+import { NonDeletedExcalidrawElement } from "../element/types";
+import { Language, t } from "../i18n";
+import useIsMobile from "../is-mobile";
+import { calculateScrollCenter, getSelectedElements } from "../scene";
+import { ExportType } from "../scene/types";
+import { AppState, LibraryItem, LibraryItems } from "../types";
+import { muteFSAbortError } from "../utils";
+import { SelectedShapeActions, ShapesSwitcher, ZoomActions } from "./Actions";
+import { BackgroundPickerAndDarkModeToggle } from "./BackgroundPickerAndDarkModeToggle";
+import CollabButton from "./CollabButton";
+import { ErrorDialog } from "./ErrorDialog";
+import { ExportCB, ExportDialog } from "./ExportDialog";
+import { FixedSideContainer } from "./FixedSideContainer";
 import { GitHubCorner } from "./GitHubCorner";
-import { Tooltip } from "./Tooltip";
-
+import { HintViewer } from "./HintViewer";
+import { exportFile, load, shield } from "./icons";
+import { Island } from "./Island";
 import "./LayerUI.scss";
 import { LibraryUnit } from "./LibraryUnit";
-import { loadLibrary, saveLibrary } from "../data/localStorage";
+import { LoadingMessage } from "./LoadingMessage";
+import { LockIcon } from "./LockIcon";
+import { MobileMenu } from "./MobileMenu";
+import { PasteChartDialog } from "./PasteChartDialog";
+import { Section } from "./Section";
+import { ShortcutsDialog } from "./ShortcutsDialog";
+import Stack from "./Stack";
 import { ToolButton } from "./ToolButton";
-import { saveLibraryAsJSON, importLibraryFromJSON } from "../data/json";
-import { muteFSAbortError } from "../utils";
-import { BackgroundPickerAndDarkModeToggle } from "./BackgroundPickerAndDarkModeToggle";
-import clsx from "clsx";
+import { Tooltip } from "./Tooltip";
+import { UserList } from "./UserList";
 
 interface LayerUIProps {
   actionManager: ActionManager;
@@ -52,20 +48,25 @@ interface LayerUIProps {
   canvas: HTMLCanvasElement | null;
   setAppState: React.Component<any, AppState>["setState"];
   elements: readonly NonDeletedExcalidrawElement[];
-  onRoomCreate: () => void;
-  onUsernameChange: (username: string) => void;
-  onRoomDestroy: () => void;
+  onCollabButtonClick?: () => void;
   onLockToggle: () => void;
-  onInsertShape: (elements: LibraryItem) => void;
+  onInsertElements: (elements: readonly NonDeletedExcalidrawElement[]) => void;
   zenModeEnabled: boolean;
   toggleZenMode: () => void;
-  lng: string;
+  langCode: Language["code"];
+  isCollaborating: boolean;
+  onExportToBackend?: (
+    exportedElements: readonly NonDeletedExcalidrawElement[],
+    appState: AppState,
+    canvas: HTMLCanvasElement | null,
+  ) => void;
+  renderCustomFooter?: (isMobile: boolean) => JSX.Element;
 }
 
-function useOnClickOutside(
+const useOnClickOutside = (
   ref: RefObject<HTMLElement>,
   cb: (event: MouseEvent) => void,
-) {
+) => {
   useEffect(() => {
     const listener = (event: MouseEvent) => {
       if (!ref.current) {
@@ -88,7 +89,7 @@ function useOnClickOutside(
       document.removeEventListener("pointerdown", listener);
     };
   }, [ref, cb]);
-}
+};
 
 const LibraryMenuItems = ({
   library,
@@ -100,7 +101,6 @@ const LibraryMenuItems = ({
 }: {
   library: LibraryItems;
   pendingElements: LibraryItem;
-  onClickOutside: (event: MouseEvent) => void;
   onRemoveFromLibrary: (index: number) => void;
   onInsertShape: (elements: LibraryItem) => void;
   onAddToLibrary: (elements: LibraryItem) => void;
@@ -114,7 +114,7 @@ const LibraryMenuItems = ({
   let addedPendingElements = false;
 
   rows.push(
-    <Stack.Row align="center" gap={1} key={"actions"}>
+    <div className="layer-ui__library-header">
       <ToolButton
         key="import"
         type="button"
@@ -148,31 +148,35 @@ const LibraryMenuItems = ({
             });
         }}
       />
-    </Stack.Row>,
+
+      <a href="https://libraries.excalidraw.com" target="_excalidraw_libraries">
+        {t("labels.libraries")}
+      </a>
+    </div>,
   );
 
   for (let row = 0; row < numRows; row++) {
-    const i = CELLS_PER_ROW * row;
+    const y = CELLS_PER_ROW * row;
     const children = [];
-    for (let j = 0; j < CELLS_PER_ROW; j++) {
+    for (let x = 0; x < CELLS_PER_ROW; x++) {
       const shouldAddPendingElements: boolean =
         pendingElements.length > 0 &&
         !addedPendingElements &&
-        i + j >= library.length;
+        y + x >= library.length;
       addedPendingElements = addedPendingElements || shouldAddPendingElements;
 
       children.push(
-        <Stack.Col key={j}>
+        <Stack.Col key={x}>
           <LibraryUnit
-            elements={library[i + j]}
+            elements={library[y + x]}
             pendingElements={
               shouldAddPendingElements ? pendingElements : undefined
             }
-            onRemoveFromLibrary={onRemoveFromLibrary.bind(null, i + j)}
+            onRemoveFromLibrary={onRemoveFromLibrary.bind(null, y + x)}
             onClick={
               shouldAddPendingElements
                 ? onAddToLibrary.bind(null, pendingElements)
-                : onInsertShape.bind(null, library[i + j])
+                : onInsertShape.bind(null, library[y + x])
             }
           />
         </Stack.Col>,
@@ -186,7 +190,7 @@ const LibraryMenuItems = ({
   }
 
   return (
-    <Stack.Col align="center" gap={1} className="layer-ui__library-items">
+    <Stack.Col align="start" gap={1} className="layer-ui__library-items">
       {rows}
     </Stack.Col>
   );
@@ -206,7 +210,13 @@ const LibraryMenu = ({
   setAppState: React.Component<any, AppState>["setState"];
 }) => {
   const ref = useRef<HTMLDivElement | null>(null);
-  useOnClickOutside(ref, onClickOutside);
+  useOnClickOutside(ref, (event) => {
+    // If click on the library icon, do nothing.
+    if ((event.target as Element).closest(".ToolIcon_type_button__library")) {
+      return;
+    }
+    onClickOutside(event);
+  });
 
   const [libraryItems, setLibraryItems] = useState<LibraryItems>([]);
 
@@ -223,7 +233,7 @@ const LibraryMenu = ({
           resolve("loading");
         }, 100);
       }),
-      loadLibrary().then((items) => {
+      Library.loadLibrary().then((items) => {
         setLibraryItems(items);
         setIsLoading("ready");
       }),
@@ -238,18 +248,18 @@ const LibraryMenu = ({
   }, []);
 
   const removeFromLibrary = useCallback(async (indexToRemove) => {
-    const items = await loadLibrary();
+    const items = await Library.loadLibrary();
     const nextItems = items.filter((_, index) => index !== indexToRemove);
-    saveLibrary(nextItems);
+    Library.saveLibrary(nextItems);
     setLibraryItems(nextItems);
   }, []);
 
   const addToLibrary = useCallback(
     async (elements: LibraryItem) => {
-      const items = await loadLibrary();
+      const items = await Library.loadLibrary();
       const nextItems = [...items, elements];
       onAddToLibrary();
-      saveLibrary(nextItems);
+      Library.saveLibrary(nextItems);
       setLibraryItems(nextItems);
     },
     [onAddToLibrary],
@@ -264,7 +274,6 @@ const LibraryMenu = ({
       ) : (
         <LibraryMenuItems
           library={libraryItems}
-          onClickOutside={onClickOutside}
           onRemoveFromLibrary={removeFromLibrary}
           onAddToLibrary={addToLibrary}
           onInsertShape={onInsertShape}
@@ -282,17 +291,17 @@ const LayerUI = ({
   setAppState,
   canvas,
   elements,
-  onRoomCreate,
-  onUsernameChange,
-  onRoomDestroy,
+  onCollabButtonClick,
   onLockToggle,
-  onInsertShape,
+  onInsertElements,
   zenModeEnabled,
   toggleZenMode,
+  isCollaborating,
+  onExportToBackend,
+  renderCustomFooter,
 }: LayerUIProps) => {
   const isMobile = useIsMobile();
 
-  // TODO: Extend tooltip component and use here.
   const renderEncryptedIcon = () => (
     <a
       className={clsx("encrypted-icon tooltip zen-mode-visibility", {
@@ -302,10 +311,9 @@ const LayerUI = ({
       target="_blank"
       rel="noopener noreferrer"
     >
-      <span className="tooltip-text" dir="auto">
-        {t("encrypted.tooltip")}
-      </span>
-      {shield}
+      <Tooltip label={t("encrypted.tooltip")} position="above" long={true}>
+        {shield}
+      </Tooltip>
     </a>
   );
 
@@ -315,20 +323,21 @@ const LayerUI = ({
       scale,
     ) => {
       if (canvas) {
-        try {
-          await exportCanvas(type, exportedElements, appState, canvas, {
-            exportBackground: appState.exportBackground,
-            name: appState.name,
-            viewBackgroundColor: appState.viewBackgroundColor,
-            scale,
-            shouldAddWatermark: appState.shouldAddWatermark,
+        await exportCanvas(type, exportedElements, appState, canvas, {
+          exportBackground: appState.exportBackground,
+          name: appState.name,
+          viewBackgroundColor: appState.viewBackgroundColor,
+          scale,
+          shouldAddWatermark: appState.shouldAddWatermark,
+        })
+          .catch(muteFSAbortError)
+          .catch((error) => {
+            console.error(error);
+            setAppState({ errorMessage: error.message });
           });
-        } catch (error) {
-          console.error(error);
-          setAppState({ errorMessage: error.message });
-        }
       }
     };
+
     return (
       <ExportDialog
         elements={elements}
@@ -337,25 +346,14 @@ const LayerUI = ({
         onExportToPng={createExporter("png")}
         onExportToSvg={createExporter("svg")}
         onExportToClipboard={createExporter("clipboard")}
-        onExportToBackend={async (exportedElements) => {
-          if (canvas) {
-            try {
-              await exportCanvas(
-                "backend",
-                exportedElements,
-                {
-                  ...appState,
-                  selectedElementIds: {},
-                },
-                canvas,
-                appState,
-              );
-            } catch (error) {
-              console.error(error);
-              setAppState({ errorMessage: error.message });
-            }
-          }
-        }}
+        onExportToBackend={
+          onExportToBackend
+            ? (elements) => {
+                onExportToBackend &&
+                  onExportToBackend(elements, appState, canvas);
+              }
+            : undefined
+        }
       />
     );
   };
@@ -377,17 +375,13 @@ const LayerUI = ({
             {actionManager.renderAction("saveAsScene")}
             {renderExportDialog()}
             {actionManager.renderAction("clearCanvas")}
-            <RoomDialog
-              isCollaborating={appState.isCollaborating}
-              collaboratorCount={appState.collaborators.size}
-              username={appState.username}
-              onUsernameChange={onUsernameChange}
-              onRoomCreate={onRoomCreate}
-              onRoomDestroy={onRoomDestroy}
-              setErrorMessage={(message: string) =>
-                setAppState({ errorMessage: message })
-              }
-            />
+            {onCollabButtonClick && (
+              <CollabButton
+                isCollaborating={isCollaborating}
+                collaboratorCount={appState.collaborators.size}
+                onClick={onCollabButtonClick}
+              />
+            )}
           </Stack.Row>
           <BackgroundPickerAndDarkModeToggle
             actionManager={actionManager}
@@ -435,7 +429,7 @@ const LayerUI = ({
     <LibraryMenu
       pendingElements={getSelectedElements(elements, appState)}
       onClickOutside={closeLibrary}
-      onInsertShape={onInsertShape}
+      onInsertShape={onInsertElements}
       onAddToLibrary={deselectItems}
       setAppState={setAppState}
     />
@@ -537,14 +531,7 @@ const LayerUI = ({
           "transition-right disable-pointerEvents": zenModeEnabled,
         })}
       >
-        <LanguageList
-          onChange={async (lng) => {
-            await setLanguage(lng);
-            setAppState({});
-          }}
-          languages={languages}
-          floating
-        />
+        {renderCustomFooter?.(false)}
         {actionManager.renderAction("toggleShortcuts")}
       </div>
       <button
@@ -570,22 +557,8 @@ const LayerUI = ({
     </footer>
   );
 
-  return isMobile ? (
-    <MobileMenu
-      appState={appState}
-      elements={elements}
-      actionManager={actionManager}
-      libraryMenu={libraryMenu}
-      exportButton={renderExportDialog()}
-      setAppState={setAppState}
-      onUsernameChange={onUsernameChange}
-      onRoomCreate={onRoomCreate}
-      onRoomDestroy={onRoomDestroy}
-      onLockToggle={onLockToggle}
-      canvas={canvas}
-    />
-  ) : (
-    <div className="layer-ui__wrapper">
+  const dialogs = (
+    <>
       {appState.isLoading && <LoadingMessage />}
       {appState.errorMessage && (
         <ErrorDialog
@@ -598,6 +571,41 @@ const LayerUI = ({
           onClose={() => setAppState({ showShortcutsDialog: false })}
         />
       )}
+      {appState.pasteDialog.shown && (
+        <PasteChartDialog
+          setAppState={setAppState}
+          appState={appState}
+          onInsertChart={onInsertElements}
+          onClose={() =>
+            setAppState({
+              pasteDialog: { shown: false, data: null },
+            })
+          }
+        />
+      )}
+    </>
+  );
+
+  return isMobile ? (
+    <>
+      {dialogs}
+      <MobileMenu
+        appState={appState}
+        elements={elements}
+        actionManager={actionManager}
+        libraryMenu={libraryMenu}
+        exportButton={renderExportDialog()}
+        setAppState={setAppState}
+        onCollabButtonClick={onCollabButtonClick}
+        onLockToggle={onLockToggle}
+        canvas={canvas}
+        isCollaborating={isCollaborating}
+        renderCustomFooter={renderCustomFooter}
+      />
+    </>
+  ) : (
+    <div className="layer-ui__wrapper">
+      {dialogs}
       {renderFixedSideContainer()}
       {renderBottomAppMenu()}
       {
@@ -620,8 +628,6 @@ const LayerUI = ({
 const areEqual = (prev: LayerUIProps, next: LayerUIProps) => {
   const getNecessaryObj = (appState: AppState): Partial<AppState> => {
     const {
-      cursorX,
-      cursorY,
       suggestedBindings,
       startBoundElement: boundElement,
       ...ret
@@ -632,9 +638,8 @@ const areEqual = (prev: LayerUIProps, next: LayerUIProps) => {
   const nextAppState = getNecessaryObj(next.appState);
 
   const keys = Object.keys(prevAppState) as (keyof Partial<AppState>)[];
-
   return (
-    prev.lng === next.lng &&
+    prev.langCode === next.langCode &&
     prev.elements === next.elements &&
     keys.every((key) => prevAppState[key] === nextAppState[key])
   );

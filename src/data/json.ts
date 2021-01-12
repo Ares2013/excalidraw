@@ -1,12 +1,11 @@
+import { fileOpen, fileSave } from "browser-nativefs";
+import { cleanAppStateForExport } from "../appState";
+import { MIME_TYPES } from "../constants";
+import { clearElementsForExport } from "../element";
 import { ExcalidrawElement } from "../element/types";
 import { AppState } from "../types";
-import { cleanAppStateForExport } from "../appState";
-
-import { fileOpen, fileSave } from "browser-nativefs";
 import { loadFromBlob } from "./blob";
-import { loadLibrary } from "./localStorage";
 import { Library } from "./library";
-import { MIME_TYPES } from "../constants";
 
 export const serializeAsJSON = (
   elements: readonly ExcalidrawElement[],
@@ -17,7 +16,7 @@ export const serializeAsJSON = (
       type: "excalidraw",
       version: 2,
       source: window.location.origin,
-      elements: elements.filter((element) => !element.isDeleted),
+      elements: clearElementsForExport(elements),
       appState: cleanAppStateForExport(appState),
     },
     null,
@@ -42,7 +41,6 @@ export const saveAsJSON = async (
     },
     appState.fileHandle,
   );
-
   return { fileHandle };
 };
 
@@ -65,7 +63,7 @@ export const isValidLibrary = (json: any) => {
 };
 
 export const saveLibraryAsJSON = async () => {
-  const library = await loadLibrary();
+  const library = await Library.loadLibrary();
   const serialized = JSON.stringify(
     {
       type: "excalidrawlib",

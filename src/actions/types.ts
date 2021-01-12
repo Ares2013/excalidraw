@@ -35,6 +35,7 @@ export type ActionName =
   | "changeStrokeWidth"
   | "changeSloppiness"
   | "changeStrokeStyle"
+  | "changeArrowhead"
   | "changeOpacity"
   | "changeFontSize"
   | "toggleCanvasMenu"
@@ -57,6 +58,7 @@ export type ActionName =
   | "zoomOut"
   | "resetZoom"
   | "zoomToFit"
+  | "zoomToSelection"
   | "changeFontFamily"
   | "changeTextAlign"
   | "toggleFullScreen"
@@ -65,7 +67,15 @@ export type ActionName =
   | "ungroup"
   | "goToCollaborator"
   | "addToLibrary"
-  | "changeSharpness";
+  | "changeSharpness"
+  | "alignTop"
+  | "alignBottom"
+  | "alignLeft"
+  | "alignRight"
+  | "alignVerticallyCentered"
+  | "alignHorizontallyCentered"
+  | "distributeHorizontally"
+  | "distributeVertically";
 
 export interface Action {
   name: ActionName;
@@ -91,9 +101,7 @@ export interface Action {
 }
 
 export interface ActionsManagerInterface {
-  actions: {
-    [actionName in ActionName]: Action;
-  };
+  actions: Record<ActionName, Action>;
   registerAction: (action: Action) => void;
   handleKeyDown: (event: KeyboardEvent) => boolean;
   getContextMenuItems: (

@@ -2,7 +2,7 @@ import { RoughCanvas } from "roughjs/bin/canvas";
 import { RoughSVG } from "roughjs/bin/svg";
 import oc from "open-color";
 
-import { FlooredNumber, AppState } from "../types";
+import { AppState, Zoom } from "../types";
 import {
   ExcalidrawElement,
   NonDeletedExcalidrawElement,
@@ -47,6 +47,7 @@ import {
   TransformHandles,
   TransformHandleType,
 } from "../element/transformHandles";
+import { viewportCoordsToSceneCoords } from "../utils";
 
 const strokeRectWithRotation = (
   context: CanvasRenderingContext2D,
@@ -147,7 +148,7 @@ const renderLinearPointHandles = (
   context.translate(sceneState.scrollX, sceneState.scrollY);
   const origStrokeStyle = context.strokeStyle;
   const lineWidth = context.lineWidth;
-  context.lineWidth = 1 / sceneState.zoom;
+  context.lineWidth = 1 / sceneState.zoom.value;
 
   LinearElementEditor.getPointsGlobalCoordinates(element).forEach(
     (point, idx) => {
@@ -162,7 +163,7 @@ const renderLinearPointHandles = (
         context,
         point[0],
         point[1],
-        POINT_HANDLE_SIZE / 2 / sceneState.zoom,
+        POINT_HANDLE_SIZE / 2 / sceneState.zoom.value,
       );
     },
   );
@@ -186,7 +187,7 @@ export const renderScene = (
     renderSelection = true,
     // Whether to employ render optimizations to improve performance.
     // Should not be turned on for export operations and similar, because it
-    //  doesn't guarantee pixel-perfect output.
+    // doesn't guarantee pixel-perfect output.
     renderOptimizations = false,
     renderGrid = true,
   }: {
@@ -226,36 +227,36 @@ export const renderScene = (
   }
 
   // Apply zoom
-  const zoomTranslationX = (-normalizedCanvasWidth * (sceneState.zoom - 1)) / 2;
-  const zoomTranslationY =
-    (-normalizedCanvasHeight * (sceneState.zoom - 1)) / 2;
+  const zoomTranslationX = sceneState.zoom.translation.x;
+  const zoomTranslationY = sceneState.zoom.translation.y;
   context.translate(zoomTranslationX, zoomTranslationY);
-  context.scale(sceneState.zoom, sceneState.zoom);
+  context.scale(sceneState.zoom.value, sceneState.zoom.value);
 
   // Grid
   if (renderGrid && appState.gridSize) {
     strokeGrid(
       context,
       appState.gridSize,
-      -Math.ceil(zoomTranslationX / sceneState.zoom / appState.gridSize) *
+      -Math.ceil(zoomTranslationX / sceneState.zoom.value / appState.gridSize) *
         appState.gridSize +
         (sceneState.scrollX % appState.gridSize),
-      -Math.ceil(zoomTranslationY / sceneState.zoom / appState.gridSize) *
+      -Math.ceil(zoomTranslationY / sceneState.zoom.value / appState.gridSize) *
         appState.gridSize +
         (sceneState.scrollY % appState.gridSize),
-      normalizedCanvasWidth / sceneState.zoom,
-      normalizedCanvasHeight / sceneState.zoom,
+      normalizedCanvasWidth / sceneState.zoom.value,
+      normalizedCanvasHeight / sceneState.zoom.value,
     );
   }
 
   // Paint visible elements
   const visibleElements = elements.filter((element) =>
-    isVisibleElement(
-      element,
-      normalizedCanvasWidth,
-      normalizedCanvasHeight,
-      sceneState,
-    ),
+    isVisibleElement(element, normalizedCanvasWidth, normalizedCanvasHeight, {
+      zoom: sceneState.zoom,
+      offsetLeft: appState.offsetLeft,
+      offsetTop: appState.offsetTop,
+      scrollX: sceneState.scrollX,
+      scrollY: sceneState.scrollY,
+    }),
   );
 
   visibleElements.forEach((element) => {
@@ -333,7 +334,7 @@ export const renderScene = (
       return acc;
     }, [] as { angle: number; elementX1: number; elementY1: number; elementX2: number; elementY2: number; selectionColors: string[] }[]);
 
-    function addSelectionForGroupId(groupId: GroupId) {
+    const addSelectionForGroupId = (groupId: GroupId) => {
       const groupElements = getElementsInGroup(elements, groupId);
       const [elementX1, elementY1, elementX2, elementY2] = getCommonBounds(
         groupElements,
@@ -346,7 +347,7 @@ export const renderScene = (
         elementY2,
         selectionColors: [oc.black],
       });
-    }
+    };
 
     for (const groupId of getSelectedGroupIds(appState)) {
       // TODO: support multiplayer selected group IDs
@@ -370,6 +371,7 @@ export const renderScene = (
       const transformHandles = getTransformHandles(
         locallySelectedElements[0],
         sceneState.zoom,
+        "mouse", // when we render we don't know which pointer type so use mouse
       );
       renderTransformHandles(
         context,
@@ -378,13 +380,13 @@ export const renderScene = (
         locallySelectedElements[0].angle,
       );
     } else if (locallySelectedElements.length > 1 && !appState.isRotating) {
-      const dashedLinePadding = 4 / sceneState.zoom;
+      const dashedLinePadding = 4 / sceneState.zoom.value;
       context.fillStyle = oc.white;
       const [x1, y1, x2, y2] = getCommonBounds(locallySelectedElements);
       const initialLineDash = context.getLineDash();
-      context.setLineDash([2 / sceneState.zoom]);
+      context.setLineDash([2 / sceneState.zoom.value]);
       const lineWidth = context.lineWidth;
-      context.lineWidth = 1 / sceneState.zoom;
+      context.lineWidth = 1 / sceneState.zoom.value;
       strokeRectWithRotation(
         context,
         x1 - dashedLinePadding,
@@ -401,7 +403,7 @@ export const renderScene = (
         [x1, y1, x2, y2],
         0,
         sceneState.zoom,
-        undefined,
+        "mouse",
         OMIT_SIDES_FOR_MULTIPLE_ELEMENTS,
       );
       renderTransformHandles(context, sceneState, transformHandles, 0);
@@ -410,7 +412,7 @@ export const renderScene = (
   }
 
   // Reset zoom
-  context.scale(1 / sceneState.zoom, 1 / sceneState.zoom);
+  context.scale(1 / sceneState.zoom.value, 1 / sceneState.zoom.value);
   context.translate(-zoomTranslationX, -zoomTranslationY);
 
   // Paint remote pointers
@@ -556,7 +558,7 @@ const renderTransformHandles = (
     const transformHandle = transformHandles[key as TransformHandleType];
     if (transformHandle !== undefined) {
       const lineWidth = context.lineWidth;
-      context.lineWidth = 1 / sceneState.zoom;
+      context.lineWidth = 1 / sceneState.zoom.value;
       if (key === "rotation") {
         fillCircle(
           context,
@@ -610,22 +612,22 @@ const renderSelectionBorder = (
   const lineDashOffset = context.lineDashOffset;
   const strokeStyle = context.strokeStyle;
 
-  const dashedLinePadding = 4 / sceneState.zoom;
-  const dashWidth = 8 / sceneState.zoom;
-  const spaceWidth = 4 / sceneState.zoom;
+  const dashedLinePadding = 4 / sceneState.zoom.value;
+  const dashWidth = 8 / sceneState.zoom.value;
+  const spaceWidth = 4 / sceneState.zoom.value;
 
-  context.lineWidth = 1 / sceneState.zoom;
+  context.lineWidth = 1 / sceneState.zoom.value;
 
   context.translate(sceneState.scrollX, sceneState.scrollY);
 
   const count = selectionColors.length;
-  for (var i = 0; i < count; ++i) {
-    context.strokeStyle = selectionColors[i];
+  for (let index = 0; index < count; ++index) {
+    context.strokeStyle = selectionColors[index];
     context.setLineDash([
       dashWidth,
       spaceWidth + (dashWidth + spaceWidth) * (count - 1),
     ]);
-    context.lineDashOffset = (dashWidth + spaceWidth) * i;
+    context.lineDashOffset = (dashWidth + spaceWidth) * index;
     strokeRectWithRotation(
       context,
       elementX1 - dashedLinePadding,
@@ -749,32 +751,37 @@ const renderBindingHighlightForSuggestedPointBinding = (
 
 const isVisibleElement = (
   element: ExcalidrawElement,
-  viewportWidth: number,
-  viewportHeight: number,
-  {
-    scrollX,
-    scrollY,
-    zoom,
-  }: {
-    scrollX: FlooredNumber;
-    scrollY: FlooredNumber;
-    zoom: number;
+  canvasWidth: number,
+  canvasHeight: number,
+  viewTransformations: {
+    zoom: Zoom;
+    offsetLeft: number;
+    offsetTop: number;
+    scrollX: number;
+    scrollY: number;
   },
 ) => {
-  const [x1, y1, x2, y2] = getElementBounds(element);
-
-  // Apply zoom
-  const viewportWidthWithZoom = viewportWidth / zoom;
-  const viewportHeightWithZoom = viewportHeight / zoom;
-
-  const viewportWidthDiff = viewportWidth - viewportWidthWithZoom;
-  const viewportHeightDiff = viewportHeight - viewportHeightWithZoom;
+  const [x1, y1, x2, y2] = getElementBounds(element); // scene coordinates
+  const topLeftSceneCoords = viewportCoordsToSceneCoords(
+    {
+      clientX: viewTransformations.offsetLeft,
+      clientY: viewTransformations.offsetTop,
+    },
+    viewTransformations,
+  );
+  const bottomRightSceneCoords = viewportCoordsToSceneCoords(
+    {
+      clientX: viewTransformations.offsetLeft + canvasWidth,
+      clientY: viewTransformations.offsetTop + canvasHeight,
+    },
+    viewTransformations,
+  );
 
   return (
-    x2 + scrollX - viewportWidthDiff / 2 >= 0 &&
-    x1 + scrollX - viewportWidthDiff / 2 <= viewportWidthWithZoom &&
-    y2 + scrollY - viewportHeightDiff / 2 >= 0 &&
-    y1 + scrollY - viewportHeightDiff / 2 <= viewportHeightWithZoom
+    topLeftSceneCoords.x <= x2 &&
+    topLeftSceneCoords.y <= y2 &&
+    bottomRightSceneCoords.x >= x1 &&
+    bottomRightSceneCoords.y >= y1
   );
 };
 

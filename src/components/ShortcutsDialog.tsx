@@ -37,7 +37,6 @@ const Shortcut = (props: {
   shortcuts: string[];
   isOr: boolean;
 }) => {
-  const isRTL = document.documentElement.getAttribute("dir") === "rtl";
   return (
     <div className="ShorcutsDialog-shortcut">
       <div
@@ -60,8 +59,7 @@ const Shortcut = (props: {
             display: "flex",
             flex: "0 0 auto",
             justifyContent: "flex-end",
-            marginLeft: isRTL ? "0em" : "auto",
-            marginRight: isRTL ? "auto" : "0em",
+            marginInlineStart: "auto",
             minWidth: "30%",
           }}
         >
@@ -122,11 +120,7 @@ export const ShortcutsDialog = ({ onClose }: { onClose?: () => void }) => {
 
   return (
     <>
-      <Dialog
-        maxWidth={900}
-        onCloseRequest={handleClose}
-        title={t("shortcutsDialog.title")}
-      >
+      <Dialog onCloseRequest={handleClose} title={t("shortcutsDialog.title")}>
         <Columns>
           <Column>
             <ShortcutIsland caption={t("shortcutsDialog.shapes")}>
@@ -199,15 +193,16 @@ export const ShortcutsDialog = ({ onClose }: { onClose?: () => void }) => {
                 shortcuts={["Shift+1"]}
               />
               <Shortcut
-                label={t("buttons.toggleFullScreen")}
-                shortcuts={["F"]}
+                label={t("shortcutsDialog.zoomToSelection")}
+                shortcuts={["Shift+2"]}
               />
+              <Shortcut label={t("buttons.fullScreen")} shortcuts={["F"]} />
               <Shortcut
-                label={t("buttons.toggleZenMode")}
+                label={t("buttons.zenMode")}
                 shortcuts={[getShortcutKey("Alt+Z")]}
               />
               <Shortcut
-                label={t("labels.toggleGridMode")}
+                label={t("labels.gridMode")}
                 shortcuts={[getShortcutKey("CtrlOrCmd+'")]}
               />
             </ShortcutIsland>
@@ -231,6 +226,10 @@ export const ShortcutsDialog = ({ onClose }: { onClose?: () => void }) => {
                   getShortcutKey(`Wheel+${t("shortcutsDialog.drag")}`),
                 ]}
                 isOr={true}
+              />
+              <Shortcut
+                label={t("labels.cut")}
+                shortcuts={[getShortcutKey("CtrlOrCmd+X")]}
               />
               <Shortcut
                 label={t("labels.copy")}
@@ -279,6 +278,22 @@ export const ShortcutsDialog = ({ onClose }: { onClose?: () => void }) => {
               <Shortcut
                 label={t("labels.bringForward")}
                 shortcuts={[getShortcutKey("CtrlOrCmd+]")]}
+              />
+              <Shortcut
+                label={t("labels.alignTop")}
+                shortcuts={[getShortcutKey("CtrlOrCmd+Shift+Up")]}
+              />
+              <Shortcut
+                label={t("labels.alignBottom")}
+                shortcuts={[getShortcutKey("CtrlOrCmd+Shift+Down")]}
+              />
+              <Shortcut
+                label={t("labels.alignLeft")}
+                shortcuts={[getShortcutKey("CtrlOrCmd+Shift+Left")]}
+              />
+              <Shortcut
+                label={t("labels.alignRight")}
+                shortcuts={[getShortcutKey("CtrlOrCmd+Shift+Right")]}
               />
               <Shortcut
                 label={t("labels.duplicateSelection")}

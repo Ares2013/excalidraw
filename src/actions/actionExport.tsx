@@ -1,17 +1,20 @@
 import React from "react";
+import { trackEvent } from "../analytics";
+import { load, questionCircle, save, saveAs } from "../components/icons";
 import { ProjectName } from "../components/ProjectName";
-import { saveAsJSON, loadFromJSON } from "../data";
-import { load, save, saveAs } from "../components/icons";
 import { ToolButton } from "../components/ToolButton";
+import "../components/ToolIcon.scss";
+import { Tooltip } from "../components/Tooltip";
+import { loadFromJSON, saveAsJSON } from "../data";
 import { t } from "../i18n";
 import useIsMobile from "../is-mobile";
-import { register } from "./register";
 import { KEYS } from "../keys";
-import { muteFSAbortError } from "../utils";
+import { register } from "./register";
 
 export const actionChangeProjectName = register({
   name: "changeProjectName",
   perform: (_elements, appState, value) => {
+    trackEvent("change", "title");
     return { appState: { ...appState, name: value }, commitToHistory: false };
   },
   PanelComponent: ({ appState, updateData }) => (
@@ -52,13 +55,20 @@ export const actionChangeExportEmbedScene = register({
     };
   },
   PanelComponent: ({ appState, updateData }) => (
-    <label title={t("labels.exportEmbedScene_details")}>
+    <label style={{ display: "flex" }}>
       <input
         type="checkbox"
         checked={appState.exportEmbedScene}
         onChange={(event) => updateData(event.target.checked)}
       />{" "}
       {t("labels.exportEmbedScene")}
+      <Tooltip
+        label={t("labels.exportEmbedScene_details")}
+        position="above"
+        long={true}
+      >
+        <div className="TooltipIcon">{questionCircle}</div>
+      </Tooltip>
     </label>
   ),
 });
@@ -96,9 +106,8 @@ export const actionSaveScene = register({
       return { commitToHistory: false };
     }
   },
-  keyTest: (event) => {
-    return event.key === "s" && event[KEYS.CTRL_OR_CMD] && !event.shiftKey;
-  },
+  keyTest: (event) =>
+    event.key === KEYS.S && event[KEYS.CTRL_OR_CMD] && !event.shiftKey,
   PanelComponent: ({ updateData }) => (
     <ToolButton
       type="button"
@@ -127,9 +136,8 @@ export const actionSaveAsScene = register({
       return { commitToHistory: false };
     }
   },
-  keyTest: (event) => {
-    return event.key === "s" && event.shiftKey && event[KEYS.CTRL_OR_CMD];
-  },
+  keyTest: (event) =>
+    event.key === KEYS.S && event.shiftKey && event[KEYS.CTRL_OR_CMD],
   PanelComponent: ({ updateData }) => (
     <ToolButton
       type="button"
@@ -147,20 +155,29 @@ export const actionSaveAsScene = register({
 
 export const actionLoadScene = register({
   name: "loadScene",
-  perform: (
-    elements,
-    appState,
-    { elements: loadedElements, appState: loadedAppState, error },
-  ) => {
-    return {
-      elements: loadedElements,
-      appState: {
-        ...loadedAppState,
-        errorMessage: error,
-      },
-      commitToHistory: true,
-    };
+  perform: async (elements, appState) => {
+    try {
+      const {
+        elements: loadedElements,
+        appState: loadedAppState,
+      } = await loadFromJSON(appState);
+      return {
+        elements: loadedElements,
+        appState: loadedAppState,
+        commitToHistory: true,
+      };
+    } catch (error) {
+      if (error?.name === "AbortError") {
+        return false;
+      }
+      return {
+        elements,
+        appState: { ...appState, errorMessage: error.message },
+        commitToHistory: false,
+      };
+    }
   },
+  keyTest: (event) => event[KEYS.CTRL_OR_CMD] && event.key === KEYS.O,
   PanelComponent: ({ updateData, appState }) => (
     <ToolButton
       type="button"
@@ -168,16 +185,7 @@ export const actionLoadScene = register({
       title={t("buttons.load")}
       aria-label={t("buttons.load")}
       showAriaLabel={useIsMobile()}
-      onClick={() => {
-        loadFromJSON(appState)
-          .then(({ elements, appState }) => {
-            updateData({ elements: elements, appState: appState });
-          })
-          .catch(muteFSAbortError)
-          .catch((error) => {
-            updateData({ error: error.message });
-          });
-      }}
+      onClick={updateData}
     />
   ),
 });

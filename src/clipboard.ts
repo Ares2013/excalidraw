@@ -5,12 +5,8 @@ import {
 import { getSelectedElements } from "./scene";
 import { AppState } from "./types";
 import { SVG_EXPORT_TAG } from "./scene/export";
-import {
-  tryParseSpreadsheet,
-  Spreadsheet,
-  VALID_SPREADSHEET,
-  MALFORMED_SPREADSHEET,
-} from "./charts";
+import { tryParseSpreadsheet, Spreadsheet, VALID_SPREADSHEET } from "./charts";
+import { canvasToBlob } from "./data/blob";
 
 const TYPE_ELEMENTS = "excalidraw/elements";
 
@@ -56,9 +52,9 @@ export const copyToClipboard = async (
   try {
     PREFER_APP_CLIPBOARD = false;
     await copyTextToSystemClipboard(json);
-  } catch (err) {
+  } catch (error) {
     PREFER_APP_CLIPBOARD = true;
-    console.error(err);
+    console.error(error);
   }
 };
 
@@ -81,8 +77,6 @@ const parsePotentialSpreadsheet = (
   const result = tryParseSpreadsheet(text);
   if (result.type === VALID_SPREADSHEET) {
     return { spreadsheet: result.spreadsheet };
-  } else if (result.type === MALFORMED_SPREADSHEET) {
-    return { errorMessage: result.error };
   }
   return null;
 };
@@ -127,7 +121,7 @@ export const parseClipboard = async (
   }
 
   // if system clipboard contains spreadsheet, use it even though it's
-  //  technically possible it's staler than in-app clipboard
+  // technically possible it's staler than in-app clipboard
   const spreadsheetResult = parsePotentialSpreadsheet(systemClipboard);
   if (spreadsheetResult) {
     return spreadsheetResult;
@@ -149,38 +143,27 @@ export const parseClipboard = async (
     return appClipboardData;
   } catch {
     // system clipboard doesn't contain excalidraw elements → return plaintext
-    //  unless we set a flag to prefer in-app clipboard because browser didn't
-    //  support storing to system clipboard on copy
+    // unless we set a flag to prefer in-app clipboard because browser didn't
+    // support storing to system clipboard on copy
     return PREFER_APP_CLIPBOARD && appClipboardData.elements
       ? appClipboardData
       : { text: systemClipboard };
   }
 };
 
-export const copyCanvasToClipboardAsPng = async (canvas: HTMLCanvasElement) =>
-  new Promise((resolve, reject) => {
-    try {
-      canvas.toBlob(async (blob) => {
-        try {
-          await navigator.clipboard.write([
-            new window.ClipboardItem({ "image/png": blob }),
-          ]);
-          resolve();
-        } catch (error) {
-          reject(error);
-        }
-      });
-    } catch (error) {
-      reject(error);
-    }
-  });
+export const copyCanvasToClipboardAsPng = async (canvas: HTMLCanvasElement) => {
+  const blob = await canvasToBlob(canvas);
+  await navigator.clipboard.write([
+    new window.ClipboardItem({ "image/png": blob }),
+  ]);
+};
 
 export const copyTextToSystemClipboard = async (text: string | null) => {
   let copied = false;
   if (probablySupportsClipboardWriteText) {
     try {
       // NOTE: doesn't work on FF on non-HTTPS domains, or when document
-      //  not focused
+      // not focused
       await navigator.clipboard.writeText(text || "");
       copied = true;
     } catch (error) {
@@ -189,7 +172,7 @@ export const copyTextToSystemClipboard = async (text: string | null) => {
   }
 
   // Note that execCommand doesn't allow copying empty strings, so if we're
-  //  clearing clipboard using this API, we must copy at least an empty char
+  // clearing clipboard using this API, we must copy at least an empty char
   if (!copied && !copyTextViaExecCommand(text || " ")) {
     throw new Error("couldn't copy");
   }
