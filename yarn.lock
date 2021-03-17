@@ -1670,12 +1670,12 @@
     "@sentry/utils" "6.2.2"
     tslib "^1.9.3"
 
-"@sentry/integrations@6.2.1":
-  version "6.2.1"
-  resolved "https://registry.npmjs.org/@sentry/integrations/-/integrations-6.2.1.tgz"
+"@sentry/integrations@6.2.2":
+  version "6.2.2"
+  resolved "https://registry.yarnpkg.com/@sentry/integrations/-/integrations-6.2.2.tgz#6a75497d3299084314eb3e845f0ae18dabb078cb"
   dependencies:
-    "@sentry/types" "6.2.1"
-    "@sentry/utils" "6.2.1"
+    "@sentry/types" "6.2.2"
+    "@sentry/utils" "6.2.2"
     localforage "^1.8.1"
     tslib "^1.9.3"
 
@@ -1687,20 +1687,9 @@
     "@sentry/types" "6.2.2"
     tslib "^1.9.3"
 
-"@sentry/types@6.2.1":
-  version "6.2.1"
-  resolved "https://registry.npmjs.org/@sentry/types/-/types-6.2.1.tgz"
-
 "@sentry/types@6.2.2":
   version "6.2.2"
   resolved "https://registry.yarnpkg.com/@sentry/types/-/types-6.2.2.tgz#9fc7795156680d3da5fc6ecc66702d8f7917f2b1"
-
-"@sentry/utils@6.2.1":
-  version "6.2.1"
-  resolved "https://registry.npmjs.org/@sentry/utils/-/utils-6.2.1.tgz"
-  dependencies:
-    "@sentry/types" "6.2.1"
-    tslib "^1.9.3"
 
 "@sentry/utils@6.2.2":
   version "6.2.2"
