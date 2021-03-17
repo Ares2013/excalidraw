@@ -68,7 +68,7 @@
     "layers": "Capas",
     "actions": "Acciones",
     "language": "Idioma",
-    "createRoom": "Compartir una sesión de colaboración en vivo",
+    "liveCollaboration": "Colaboración en directo",
     "duplicateSelection": "Duplicar",
     "untitled": "Sin título",
     "name": "Nombre",
@@ -77,12 +77,12 @@
     "group": "Agrupar selección",
     "ungroup": "Desagrupar selección",
     "collaborators": "Colaboradores",
-    "gridMode": "Modo cuadrícula",
+    "showGrid": "Mostrar cuadrícula",
     "addToLibrary": "Añadir a la biblioteca",
     "removeFromLibrary": "Eliminar de la biblioteca",
-    "libraryLoadingMessage": "Cargando biblioteca...",
+    "libraryLoadingMessage": "Cargando librería…",
     "libraries": "Explorar bibliotecas",
-    "loadingScene": "Cargando escena...",
+    "loadingScene": "Cargando escena…",
     "align": "Alinear",
     "alignTop": "Alineación superior",
     "alignBottom": "Alineación inferior",
@@ -91,7 +91,9 @@
     "centerVertically": "Centrar verticalmente",
     "centerHorizontally": "Centrar horizontalmente",
     "distributeHorizontally": "Distribuir horizontalmente",
-    "distributeVertically": "Distribuir verticalmente"
+    "distributeVertically": "Distribuir verticalmente",
+    "viewMode": "Modo presentación",
+    "toggleExportColorScheme": "Cambiar el esquema de colores de exportación"
   },
   "buttons": {
     "clearReset": "Limpiar lienzo y reiniciar el color de fondo",
@@ -116,7 +118,7 @@
     "edit": "Editar",
     "undo": "Deshacer",
     "redo": "Rehacer",
-    "roomDialog": "Iniciar colaboración en vivo",
+    "resetLibrary": "Resetear librería",
     "createNewRoom": "Crear nueva sala",
     "fullScreen": "Pantalla completa",
     "darkMode": "Modo oscuro",
@@ -135,10 +137,13 @@
     "decryptFailed": "No se pudieron descifrar los datos.",
     "uploadedSecurly": "La carga ha sido asegurada con cifrado de principio a fin, lo que significa que el servidor de Excalidraw y terceros no pueden leer el contenido.",
     "loadSceneOverridePrompt": "Si carga este dibujo externo, reemplazará el que tiene. ¿Desea continuar?",
+    "collabStopOverridePrompt": "Detener la sesión sobrescribirá su dibujo anterior almacenado en local. ¿Estás seguro?\n\n(Si quieres mantener tu dibujo en local, simplemente cierre la pestaña del navegador en su lugar.)",
     "errorLoadingLibrary": "Se ha producido un error al cargar la biblioteca de terceros.",
     "confirmAddLibrary": "Esto añadirá {{numShapes}} forma(s) a tu biblioteca. ¿Estás seguro?",
     "imageDoesNotContainScene": "La importación de imágenes no está homologada en este momento.\n\n¿Deseas importar una escena? Esta imagen no parece contener ningún dato de escena. ¿Lo has activado durante la exportación?",
-    "cannotRestoreFromImage": "No se pudo restaurar la escena desde este archivo de imagen"
+    "cannotRestoreFromImage": "No se pudo restaurar la escena desde este archivo de imagen",
+    "invalidSceneUrl": "No se ha podido importar la escena desde la URL proporcionada. Está mal formada, o no contiene datos de Excalidraw JSON válidos.",
+    "resetLibrary": "Esto eliminará tu librería. ¿Estás seguro?"
   },
   "toolBar": {
     "selection": "Selección",
@@ -199,24 +204,26 @@
   "errorDialog": {
     "title": "Error"
   },
-  "shortcutsDialog": {
-    "title": "Atajos del teclado",
-    "shapes": "Formas",
-    "or": "o",
-    "click": "clic",
-    "drag": "arrastrar",
+  "helpDialog": {
+    "blog": "Lee nuestro blog",
+    "click": "click",
     "curvedArrow": "Flecha curvada",
     "curvedLine": "Línea curva",
+    "documentation": "Documentación",
+    "drag": "arrastrar",
     "editor": "Editor",
-    "view": "Vista",
-    "blog": "Lee nuestro blog",
-    "howto": "Siga nuestras guías",
     "github": "¿Has encontrado un problema? Envíalo",
-    "textNewLine": "Añadir nueva línea (texto)",
+    "howto": "Siga nuestras guías",
+    "or": "o",
+    "preventBinding": "Evitar yuxtaposición de flechas",
+    "shapes": "Formas",
+    "shortcuts": "Atajos del teclado",
     "textFinish": "Finalizar edición (texto)",
+    "textNewLine": "Añadir nueva línea (texto)",
+    "title": "Ayuda",
+    "view": "Vista",
     "zoomToFit": "Ajustar la vista para mostrar todos los elementos",
-    "zoomToSelection": "Hacer zoom a la selección",
-    "preventBinding": "Evitar yuxtaposición de flechas"
+    "zoomToSelection": "Hacer zoom a la selección"
   },
   "encrypted": {
     "tooltip": "Tus dibujos están cifrados de punto a punto, por lo que los servidores de Excalidraw nunca los verán."
@@ -231,6 +238,18 @@
     "storage": "Almacenamiento",
     "title": "Estadísticas para nerds",
     "total": "Total",
+    "version": "Versión",
+    "versionCopy": "Clic para copiar",
+    "versionNotAvailable": "Versión no disponible",
     "width": "Ancho"
+  },
+  "toast": {
+    "copyStyles": "Estilos copiados.",
+    "copyToClipboard": "Copiado en el portapapeles.",
+    "copyToClipboardAsPng": "Copiado {{exportSelection}} al portapapeles como PNG\n({{exportColorScheme}})",
+    "fileSaved": "Archivo guardado.",
+    "fileSavedToFilename": "Guardado en {filename}",
+    "canvas": "lienzo",
+    "selection": "selección"
   }
 }

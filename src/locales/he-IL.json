@@ -68,7 +68,7 @@
     "layers": "שכבות",
     "actions": "פעולות",
     "language": "שפה",
-    "createRoom": "התחל שיתוף פעולה חי",
+    "liveCollaboration": "",
     "duplicateSelection": "שכפל",
     "untitled": "ללא כותרת",
     "name": "שם",
@@ -77,12 +77,12 @@
     "group": "אחד לקבוצה",
     "ungroup": "פרק קבוצה",
     "collaborators": "שותפים",
-    "gridMode": "מצב רשת",
+    "showGrid": "",
     "addToLibrary": "הוסף לספריה",
     "removeFromLibrary": "הסר מספריה",
-    "libraryLoadingMessage": "טוען ספריה...",
+    "libraryLoadingMessage": "טוען ספריה…",
     "libraries": "דפדף בספריות",
-    "loadingScene": "טוען תצוגה...",
+    "loadingScene": "טוען תצוגה…",
     "align": "יישר",
     "alignTop": "יישר למעלה",
     "alignBottom": "יישר למטה",
@@ -91,7 +91,9 @@
     "centerVertically": "מרכז אנכית",
     "centerHorizontally": "מרכז אופקית",
     "distributeHorizontally": "חלוקה אופקית",
-    "distributeVertically": "חלוקה אנכית"
+    "distributeVertically": "חלוקה אנכית",
+    "viewMode": "מצב תצוגה",
+    "toggleExportColorScheme": ""
   },
   "buttons": {
     "clearReset": "אפס את הלוח",
@@ -116,7 +118,7 @@
     "edit": "ערוך",
     "undo": "בטל",
     "redo": "בצע מחדש",
-    "roomDialog": "התחל שיתוף חי",
+    "resetLibrary": "איפוס ספריה",
     "createNewRoom": "צור חדר",
     "fullScreen": "מסך מלא",
     "darkMode": "מצב כהה",
@@ -135,10 +137,13 @@
     "decryptFailed": "לא ניתן לפענח מידע.",
     "uploadedSecurly": "ההעלאה הוצפנה מקצה לקצה, ולכן שרת Excalidraw וצד שלישי לא יכולים לקרוא את התוכן.",
     "loadSceneOverridePrompt": "טעינה של ציור חיצוני תחליף את התוכן הקיים שלך. האם תרצה להמשיך?",
+    "collabStopOverridePrompt": "",
     "errorLoadingLibrary": "קרתה שגיאה בטעינת הספריה החיצונית.",
     "confirmAddLibrary": "הפעולה תוסיף {{numShapes}} צורה(ות) לספריה שלך. האם אתה בטוח?",
     "imageDoesNotContainScene": "אין תמיכה בייבוא תמונות כעת.\n\nהאם אתה רוצה לייבא תצוגה? התמונה הזאת אינה מכילה מידע על תצוגה. האם הפעלת את האפשרות הזאת בזמן הוצאת המידע?",
-    "cannotRestoreFromImage": "לא הצלחנו לשחזר את התצוגה מקובץ התמונה"
+    "cannotRestoreFromImage": "לא הצלחנו לשחזר את התצוגה מקובץ התמונה",
+    "invalidSceneUrl": "",
+    "resetLibrary": ""
   },
   "toolBar": {
     "selection": "בחירה",
@@ -199,24 +204,26 @@
   "errorDialog": {
     "title": "שגיאה"
   },
-  "shortcutsDialog": {
-    "title": "קיצורי מקלדת",
-    "shapes": "צורות",
-    "or": "או",
-    "click": "לחץ",
-    "drag": "גרור",
-    "curvedArrow": "חץ מעוקל",
-    "curvedLine": "קו מעוקל",
-    "editor": "עורך",
-    "view": "תצוגה",
+  "helpDialog": {
     "blog": "קרא את הבלוג שלנו",
-    "howto": "עקוב אחר המדריכים שלנו",
+    "click": "קליק",
+    "curvedArrow": "",
+    "curvedLine": "",
+    "documentation": "תיעוד",
+    "drag": "לגרור",
+    "editor": "עורך",
     "github": "מצאת בעיה? דווח",
-    "textNewLine": "הוסף שורה חדשה (טקסט)",
+    "howto": "עקוב אחר המדריכים שלנו",
+    "or": "או",
+    "preventBinding": "",
+    "shapes": "צורות",
+    "shortcuts": "קיצורי מקלדת",
     "textFinish": "סיים עריכה (טקסט)",
-    "zoomToFit": "זום להתאמת כל האלמנטים למסך",
-    "zoomToSelection": "התמקד בבחירה",
-    "preventBinding": "מנע השתלבות חצים"
+    "textNewLine": "הוסף שורה חדשה (טקסט)",
+    "title": "עזרה",
+    "view": "תצוגה",
+    "zoomToFit": "",
+    "zoomToSelection": "התמקד בבחירה"
   },
   "encrypted": {
     "tooltip": "הרישומים שלך מוצפנים מקצה לקצה כך שהשרתים של Excalidraw לא יראו אותם לעולם."
@@ -231,6 +238,18 @@
     "storage": "אחסון",
     "title": "סטטיסטיקות לחנונים",
     "total": "סה״כ",
+    "version": "",
+    "versionCopy": "לחץ להעתקה",
+    "versionNotAvailable": "",
     "width": "רוחב"
+  },
+  "toast": {
+    "copyStyles": "העתק סגנונות.",
+    "copyToClipboard": "",
+    "copyToClipboardAsPng": "",
+    "fileSaved": "קובץ נשמר.",
+    "fileSavedToFilename": "",
+    "canvas": "",
+    "selection": ""
   }
 }

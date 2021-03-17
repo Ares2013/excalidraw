@@ -1,4 +1,4 @@
-@import "../css/_variables";
+@import "../css/variables.module";
 
 .excalidraw {
   .ExportDialog__preview {
@@ -16,7 +16,7 @@
     max-height: 25rem;
   }
 
-  &.Appearance_dark .ExportDialog__preview canvas {
+  &.theme--dark .ExportDialog__preview canvas {
     filter: none;
   }
 

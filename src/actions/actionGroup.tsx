@@ -125,7 +125,6 @@ export const actionGroup = register({
       commitToHistory: true,
     };
   },
-  contextMenuOrder: 4,
   contextItemLabel: "labels.group",
   contextItemPredicate: (elements, appState) =>
     enableActionGroup(elements, appState),
@@ -135,7 +134,7 @@ export const actionGroup = register({
     <ToolButton
       hidden={!enableActionGroup(elements, appState)}
       type="button"
-      icon={<GroupIcon appearance={appState.appearance} />}
+      icon={<GroupIcon theme={appState.theme} />}
       onClick={() => updateData(null)}
       title={`${t("labels.group")} — ${getShortcutKey("CtrlOrCmd+G")}`}
       aria-label={t("labels.group")}
@@ -174,7 +173,6 @@ export const actionUngroup = register({
   },
   keyTest: (event) =>
     event.shiftKey && event[KEYS.CTRL_OR_CMD] && event.code === CODES.G,
-  contextMenuOrder: 5,
   contextItemLabel: "labels.ungroup",
   contextItemPredicate: (elements, appState) =>
     getSelectedGroupIds(appState).length > 0,
@@ -183,7 +181,7 @@ export const actionUngroup = register({
     <ToolButton
       type="button"
       hidden={getSelectedGroupIds(appState).length === 0}
-      icon={<UngroupIcon appearance={appState.appearance} />}
+      icon={<UngroupIcon theme={appState.theme} />}
       onClick={() => updateData(null)}
       title={`${t("labels.ungroup")} — ${getShortcutKey("CtrlOrCmd+Shift+G")}`}
       aria-label={t("labels.ungroup")}

@@ -1,8 +1,13 @@
-name: Cancel
-on: [push]
+name: Cancel previous runs
+
+on:
+  push:
+    branches:
+      - master
+  pull_request:
+
 jobs:
   cancel:
-    name: "Cancel Previous Runs"
     runs-on: ubuntu-latest
     timeout-minutes: 3
     steps:

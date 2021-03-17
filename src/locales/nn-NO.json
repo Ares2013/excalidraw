@@ -1,7 +1,7 @@
 {
   "labels": {
     "paste": "Lim inn",
-    "pasteCharts": "Lim inn diagrammer",
+    "pasteCharts": "Lim inn diagram",
     "selectAll": "Vel alt",
     "multiSelect": "Legg til element i utval",
     "moveCanvas": "Flytt lerretet",
@@ -68,7 +68,7 @@
     "layers": "Lag",
     "actions": "Handlingar",
     "language": "Språk",
-    "createRoom": "Del ei sanntids-samarbeidsøkt",
+    "liveCollaboration": "",
     "duplicateSelection": "Dupliser",
     "untitled": "Utan namn",
     "name": "Namn",
@@ -77,12 +77,12 @@
     "group": "Grupper utval",
     "ungroup": "Avgrupper utval",
     "collaborators": "Samarbeidarar",
-    "gridMode": "Rutevisning",
+    "showGrid": "",
     "addToLibrary": "Legg til i bibliotek",
     "removeFromLibrary": "Fjern frå bibliotek",
-    "libraryLoadingMessage": "Laster bibliotek...",
+    "libraryLoadingMessage": "Laster bibliotek…",
     "libraries": "Blad gjennom bibliotek",
-    "loadingScene": "Laster scene...",
+    "loadingScene": "Laster scene…",
     "align": "Juster",
     "alignTop": "Juster til topp",
     "alignBottom": "Juster til botn",
@@ -91,7 +91,9 @@
     "centerVertically": "Midtstill vertikalt",
     "centerHorizontally": "Midtstill horisontalt",
     "distributeHorizontally": "Sprei horisontalt",
-    "distributeVertically": "Sprei vertikalt"
+    "distributeVertically": "Sprei vertikalt",
+    "viewMode": "",
+    "toggleExportColorScheme": ""
   },
   "buttons": {
     "clearReset": "Tilbakestill lerretet",
@@ -116,7 +118,7 @@
     "edit": "Rediger",
     "undo": "Angre",
     "redo": "Gjer om",
-    "roomDialog": "Start sanntids-samarbeid",
+    "resetLibrary": "",
     "createNewRoom": "Lag nytt rom",
     "fullScreen": "Fullskjerm",
     "darkMode": "Mørk modus",
@@ -135,10 +137,13 @@
     "decryptFailed": "Kunne ikkje dekryptere data.",
     "uploadedSecurly": "Opplastinga er kryptert og er ikkje mogleg å lese av Excalidraw-serveren eller tredjepartar.",
     "loadSceneOverridePrompt": "Innlasting av ekstern teikning erstattar ditt eksisterande innhald. Ynskjer du å fortsette?",
+    "collabStopOverridePrompt": "",
     "errorLoadingLibrary": "Det oppstod ein feil under lastinga av tredjepartsbibliotek.",
     "confirmAddLibrary": "Dette vil legge til {{numShapes}} form(er) i biblioteket ditt. Er du sikker?",
     "imageDoesNotContainScene": "Importering av bilder støttes ikkje for p. t.\n\nVil du importere ein scene? Dette bildet ser ikkje ut til å inneholde noen scene-data. Har du aktivert dette under eksporten?",
-    "cannotRestoreFromImage": "Scena kunne ikkje gjenopprettast frå denne biletfila"
+    "cannotRestoreFromImage": "Scena kunne ikkje gjenopprettast frå denne biletfila",
+    "invalidSceneUrl": "",
+    "resetLibrary": ""
   },
   "toolBar": {
     "selection": "Vel",
@@ -199,24 +204,26 @@
   "errorDialog": {
     "title": "Feil"
   },
-  "shortcutsDialog": {
-    "title": "Tastatursnarvegar",
-    "shapes": "Figurar",
-    "or": "eller",
+  "helpDialog": {
+    "blog": "",
     "click": "klikk",
-    "drag": "drag",
-    "curvedArrow": "Boga pil",
-    "curvedLine": "Boga linje",
+    "curvedArrow": "",
+    "curvedLine": "",
+    "documentation": "",
+    "drag": "",
     "editor": "Redigering",
+    "github": "",
+    "howto": "",
+    "or": "eller",
+    "preventBinding": "",
+    "shapes": "Formar",
+    "shortcuts": "",
+    "textFinish": "",
+    "textNewLine": "",
+    "title": "Hjelp",
     "view": "Vising",
-    "blog": "Les bloggen vår",
-    "howto": "Følg vegleiinga vår",
-    "github": "Funne eit problem? Send inn",
-    "textNewLine": "Legg til ny linje (tekst)",
-    "textFinish": "Fullfør redigering (tekst)",
-    "zoomToFit": "Zoom for å sjå alle elementa",
-    "zoomToSelection": "Zoom til utval",
-    "preventBinding": "Hindre pilkobling"
+    "zoomToFit": "",
+    "zoomToSelection": ""
   },
   "encrypted": {
     "tooltip": "Teikningane dine er ende-til-ende-krypterte slik at Excalidraw sine serverar aldri får sjå dei."
@@ -231,6 +238,18 @@
     "storage": "Lagring",
     "title": "Statistikk for nerdar",
     "total": "Totalt",
+    "version": "",
+    "versionCopy": "",
+    "versionNotAvailable": "",
     "width": "Breidde"
+  },
+  "toast": {
+    "copyStyles": "",
+    "copyToClipboard": "",
+    "copyToClipboardAsPng": "",
+    "fileSaved": "",
+    "fileSavedToFilename": "",
+    "canvas": "",
+    "selection": ""
   }
 }
