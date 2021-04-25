@@ -1,28 +1,32 @@
 import { fileOpen, fileSave } from "browser-fs-access";
 import { cleanAppStateForExport } from "../appState";
-import { MIME_TYPES } from "../constants";
+import { EXPORT_DATA_TYPES, EXPORT_SOURCE, MIME_TYPES } from "../constants";
 import { clearElementsForExport } from "../element";
 import { ExcalidrawElement } from "../element/types";
 import { AppState } from "../types";
 import { loadFromBlob } from "./blob";
-import { Library } from "./library";
-import { ImportedDataState } from "./types";
+
+import {
+  ExportedDataState,
+  ImportedDataState,
+  ExportedLibraryData,
+} from "./types";
+import Library from "./library";
 
 export const serializeAsJSON = (
   elements: readonly ExcalidrawElement[],
   appState: AppState,
-): string =>
-  JSON.stringify(
-    {
-      type: "excalidraw",
-      version: 2,
-      source: window.location.origin,
-      elements: clearElementsForExport(elements),
-      appState: cleanAppStateForExport(appState),
-    },
-    null,
-    2,
-  );
+): string => {
+  const data: ExportedDataState = {
+    type: EXPORT_DATA_TYPES.excalidraw,
+    version: 2,
+    source: EXPORT_SOURCE,
+    elements: clearElementsForExport(elements),
+    appState: cleanAppStateForExport(appState),
+  };
+
+  return JSON.stringify(data, null, 2);
+};
 
 export const saveAsJSON = async (
   elements: readonly ExcalidrawElement[],
@@ -69,7 +73,7 @@ export const isValidExcalidrawData = (data?: {
   appState?: any;
 }): data is ImportedDataState => {
   return (
-    data?.type === "excalidraw" &&
+    data?.type === EXPORT_DATA_TYPES.excalidraw &&
     (!data.elements ||
       (Array.isArray(data.elements) &&
         (!data.appState || typeof data.appState === "object")))
@@ -80,22 +84,20 @@ export const isValidLibrary = (json: any) => {
   return (
     typeof json === "object" &&
     json &&
-    json.type === "excalidrawlib" &&
+    json.type === EXPORT_DATA_TYPES.excalidrawLibrary &&
     json.version === 1
   );
 };
 
-export const saveLibraryAsJSON = async () => {
-  const library = await Library.loadLibrary();
-  const serialized = JSON.stringify(
-    {
-      type: "excalidrawlib",
-      version: 1,
-      library,
-    },
-    null,
-    2,
-  );
+export const saveLibraryAsJSON = async (library: Library) => {
+  const libraryItems = await library.loadLibrary();
+  const data: ExportedLibraryData = {
+    type: EXPORT_DATA_TYPES.excalidrawLibrary,
+    version: 1,
+    source: EXPORT_SOURCE,
+    library: libraryItems,
+  };
+  const serialized = JSON.stringify(data, null, 2);
   const fileName = "library.excalidrawlib";
   const blob = new Blob([serialized], {
     type: MIME_TYPES.excalidrawlib,
@@ -107,7 +109,7 @@ export const saveLibraryAsJSON = async () => {
   });
 };
 
-export const importLibraryFromJSON = async () => {
+export const importLibraryFromJSON = async (library: Library) => {
   const blob = await fileOpen({
     description: "Excalidraw library files",
     // ToDo: Be over-permissive until https://bugs.webkit.org/show_bug.cgi?id=34442
@@ -116,5 +118,5 @@ export const importLibraryFromJSON = async () => {
     extensions: [".json", ".excalidrawlib"],
     */
   });
-  Library.importLibrary(blob);
+  await library.importLibrary(blob);
 };

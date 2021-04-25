@@ -8,9 +8,10 @@ import { Tooltip } from "../components/Tooltip";
 import { DarkModeToggle, Appearence } from "../components/DarkModeToggle";
 import { loadFromJSON, saveAsJSON } from "../data";
 import { t } from "../i18n";
-import useIsMobile from "../is-mobile";
+import { useIsMobile } from "../components/App";
 import { KEYS } from "../keys";
 import { register } from "./register";
+import { supported } from "browser-fs-access";
 
 export const actionChangeProjectName = register({
   name: "changeProjectName",
@@ -18,11 +19,14 @@ export const actionChangeProjectName = register({
     trackEvent("change", "title");
     return { appState: { ...appState, name: value }, commitToHistory: false };
   },
-  PanelComponent: ({ appState, updateData }) => (
+  PanelComponent: ({ appState, updateData, appProps }) => (
     <ProjectName
       label={t("labels.fileTitle")}
       value={appState.name || "Unnamed"}
       onChange={(name: string) => updateData(name)}
+      isNameEditable={
+        typeof appProps.name === "undefined" && !appState.viewModeEnabled
+      }
     />
   ),
 });
@@ -132,6 +136,7 @@ export const actionSaveScene = register({
       aria-label={t("buttons.save")}
       showAriaLabel={useIsMobile()}
       onClick={() => updateData(null)}
+      data-testid="save-button"
     />
   ),
 });
@@ -161,10 +166,9 @@ export const actionSaveAsScene = register({
       title={t("buttons.saveAs")}
       aria-label={t("buttons.saveAs")}
       showAriaLabel={useIsMobile()}
-      hidden={
-        !("chooseFileSystemEntries" in window || "showOpenFilePicker" in window)
-      }
+      hidden={!supported}
       onClick={() => updateData(null)}
+      data-testid="save-as-button"
     />
   ),
 });
@@ -202,6 +206,7 @@ export const actionLoadScene = register({
       aria-label={t("buttons.load")}
       showAriaLabel={useIsMobile()}
       onClick={updateData}
+      data-testid="load-button"
     />
   ),
 });

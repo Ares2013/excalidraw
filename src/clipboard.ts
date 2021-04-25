@@ -7,14 +7,19 @@ import { AppState } from "./types";
 import { SVG_EXPORT_TAG } from "./scene/export";
 import { tryParseSpreadsheet, Spreadsheet, VALID_SPREADSHEET } from "./charts";
 import { canvasToBlob } from "./data/blob";
-
-const TYPE_ELEMENTS = "excalidraw/elements";
+import { EXPORT_DATA_TYPES } from "./constants";
 
 type ElementsClipboard = {
-  type: typeof TYPE_ELEMENTS;
-  created: number;
+  type: typeof EXPORT_DATA_TYPES.excalidrawClipboard;
   elements: ExcalidrawElement[];
 };
+
+export interface ClipboardData {
+  spreadsheet?: Spreadsheet;
+  elements?: readonly ExcalidrawElement[];
+  text?: string;
+  errorMessage?: string;
+}
 
 let CLIPBOARD = "";
 let PREFER_APP_CLIPBOARD = false;
@@ -31,8 +36,16 @@ export const probablySupportsClipboardBlob =
   "ClipboardItem" in window &&
   "toBlob" in HTMLCanvasElement.prototype;
 
-const isElementsClipboard = (contents: any): contents is ElementsClipboard => {
-  if (contents?.type === TYPE_ELEMENTS) {
+const clipboardContainsElements = (
+  contents: any,
+): contents is { elements: ExcalidrawElement[] } => {
+  if (
+    [
+      EXPORT_DATA_TYPES.excalidraw,
+      EXPORT_DATA_TYPES.excalidrawClipboard,
+    ].includes(contents?.type) &&
+    Array.isArray(contents.elements)
+  ) {
     return true;
   }
   return false;
@@ -43,8 +56,7 @@ export const copyToClipboard = async (
   appState: AppState,
 ) => {
   const contents: ElementsClipboard = {
-    type: TYPE_ELEMENTS,
-    created: Date.now(),
+    type: EXPORT_DATA_TYPES.excalidrawClipboard,
     elements: getSelectedElements(elements, appState),
   };
   const json = JSON.stringify(contents);
@@ -105,12 +117,7 @@ const getSystemClipboard = async (
  */
 export const parseClipboard = async (
   event: ClipboardEvent | null,
-): Promise<{
-  spreadsheet?: Spreadsheet;
-  elements?: readonly ExcalidrawElement[];
-  text?: string;
-  errorMessage?: string;
-}> => {
+): Promise<ClipboardData> => {
   const systemClipboard = await getSystemClipboard(event);
 
   // if system clipboard empty, couldn't be resolved, or contains previously
@@ -131,15 +138,9 @@ export const parseClipboard = async (
 
   try {
     const systemClipboardData = JSON.parse(systemClipboard);
-    // system clipboard elements are newer than in-app clipboard
-    if (
-      isElementsClipboard(systemClipboardData) &&
-      (!appClipboardData?.created ||
-        appClipboardData.created < systemClipboardData.created)
-    ) {
+    if (clipboardContainsElements(systemClipboardData)) {
       return { elements: systemClipboardData.elements };
     }
-    // in-app clipboard is newer than system clipboard
     return appClipboardData;
   } catch {
     // system clipboard doesn't contain excalidraw elements → return plaintext

@@ -1,6 +1,6 @@
 ### Excalidraw
 
-Excalidraw exported as a component to directly embed in your projects
+Excalidraw exported as a component to directly embed in your projects.
 
 ### Installation
 
@@ -16,13 +16,13 @@ or via yarn
 yarn add react react-dom @excalidraw/excalidraw
 ```
 
-After installation you will see a folder `excalidraw-assets` in `dist` directory which contains the assets needed for this app.
+After installation you will see a folder `excalidraw-assets` and `excalidraw-assets-dev` in `dist` directory which contains the assets needed for this app in prod and dev mode respectively.
 
-Move the folder `excalidraw-assets` to the path where your assets are served.
+Move the folder `excalidraw-assets` and `excalidraw-assets-dev` to the path where your assets are served.
 
 By default it will try to load the files from `https://unpkg.com/@excalidraw/excalidraw/{currentVersion}/dist/`
 
-If you want to load assets from a different path you can set a variable `window.EXCALIDRAW_ASSET_PATH` to the url from where you want to load the assets.
+If you want to load assets from a different path you can set a variable `window.EXCALIDRAW_ASSET_PATH` depending on environment (for example if you have different URL's for dev and prod) to the url from where you want to load the assets.
 
 ### Demo
 
@@ -30,7 +30,11 @@ If you want to load assets from a different path you can set a variable `window.
 
 ### Usage
 
-1. If you are using a Web bundler (for instance, Webpack), you can import it as an ES6 module as shown below
+#### Using Web Bundler
+
+If you are using a Web bundler (for instance, Webpack), you can import it as an ES6 module as shown below
+
+<details><summary><strong>View Example</strong></summary>
 
 ```js
 import React, { useEffect, useState, useRef } from "react";
@@ -41,32 +45,10 @@ import "./styles.scss";
 
 export default function App() {
   const excalidrawRef = useRef(null);
-  const excalidrawWrapperRef = useRef(null);
-  const [dimensions, setDimensions] = useState({
-    width: undefined,
-    height: undefined,
-  });
 
   const [viewModeEnabled, setViewModeEnabled] = useState(false);
   const [zenModeEnabled, setZenModeEnabled] = useState(false);
   const [gridModeEnabled, setGridModeEnabled] = useState(false);
-
-  useEffect(() => {
-    setDimensions({
-      width: excalidrawWrapperRef.current.getBoundingClientRect().width,
-      height: excalidrawWrapperRef.current.getBoundingClientRect().height,
-    });
-    const onResize = () => {
-      setDimensions({
-        width: excalidrawWrapperRef.current.getBoundingClientRect().width,
-        height: excalidrawWrapperRef.current.getBoundingClientRect().height,
-      });
-    };
-
-    window.addEventListener("resize", onResize);
-
-    return () => window.removeEventListener("resize", onResize);
-  }, [excalidrawWrapperRef]);
 
   const updateScene = () => {
     const sceneData = {
@@ -140,13 +122,11 @@ export default function App() {
           Grid mode
         </label>
       </div>
-      <div className="excalidraw-wrapper" ref={excalidrawWrapperRef}>
+      <div className="excalidraw-wrapper">
         <Excalidraw
           ref={excalidrawRef}
-          width={dimensions.width}
-          height={dimensions.height}
           initialData={InitialData}
-          onChange={(elements, state) =>
+          onChange={(elements, state) => {
             console.log("Elements :", elements, "State : ", state)
           }
           onPointerUpdate={(payload) => console.log(payload)}
@@ -163,11 +143,52 @@ export default function App() {
 }
 ```
 
+To view the full example visit :point_down:
+
 [![Edit excalidraw](https://codesandbox.io/static/img/play-codesandbox.svg)](https://codesandbox.io/s/excalidraw-ehlz3?fontsize=14&hidenavigation=1&theme=dark)
 
-2. To use it in a browser directly:
+</details>
 
-You will need to make sure `react`, `react-dom` is available as shown below.
+Since Excalidraw doesn't support server side rendering yet so you will have to make sure the component is rendered once host is mounted.
+
+```js
+import { useState, useEffect } from "react";
+export default function IndexPage() {
+  const [Comp, setComp] = useState(null);
+  useEffect(() => {
+    import("@excalidraw/excalidraw").then((comp) => setComp(comp.default));
+  });
+  return <>{Comp && <Comp />}</>;
+}
+```
+
+The `types` are available at `@excalidraw/excalidraw/types`, you can view [example for typescript](https://codesandbox.io/s/excalidraw-types-9h2dm)
+
+#### In Browser
+
+To use it in a browser directly:
+
+For development use :point_down:
+
+```js
+<script
+  type="text/javascript"
+  src="https://unpkg.com/@excalidraw/excalidraw@0.6.0/dist/excalidraw.development.js"
+></script>
+```
+
+For production use :point_down:
+
+```js
+<script
+  type="text/javascript"
+  src="https://unpkg.com/@excalidraw/excalidraw@0.6.0/dist/excalidraw.production.min.js"
+></script>
+```
+
+You will need to make sure `react`, `react-dom` is available as shown in the below example. For prod please use the production versions of `react`, `react-dom`.
+
+<details><summary><strong>View Example</strong></summary>
 
 ```html
 <!DOCTYPE html>
@@ -180,7 +201,7 @@ You will need to make sure `react`, `react-dom` is available as shown below.
 
     <script
       type="text/javascript"
-      src="https://unpkg.com/@excalidraw/excalidraw@0.4.1/dist/excalidraw.min.js"
+      src="https://unpkg.com/@excalidraw/excalidraw@0.6.0/dist/excalidraw.development.js"
     ></script>
   </head>
 
@@ -201,32 +222,10 @@ import InitialData from "./initialData";
 
 const App = () => {
   const excalidrawRef = React.useRef(null);
-  const excalidrawWrapperRef = React.useRef(null);
-  const [dimensions, setDimensions] = React.useState({
-    width: undefined,
-    height: undefined,
-  });
 
   const [viewModeEnabled, setViewModeEnabled] = React.useState(false);
   const [zenModeEnabled, setZenModeEnabled] = React.useState(false);
   const [gridModeEnabled, setGridModeEnabled] = React.useState(false);
-
-  React.useEffect(() => {
-    setDimensions({
-      width: excalidrawWrapperRef.current.getBoundingClientRect().width,
-      height: excalidrawWrapperRef.current.getBoundingClientRect().height,
-    });
-    const onResize = () => {
-      setDimensions({
-        width: excalidrawWrapperRef.current.getBoundingClientRect().width,
-        height: excalidrawWrapperRef.current.getBoundingClientRect().height,
-      });
-    };
-
-    window.addEventListener("resize", onResize);
-
-    return () => window.removeEventListener("resize", onResize);
-  }, [excalidrawWrapperRef]);
 
   const updateScene = () => {
     const sceneData = {
@@ -320,9 +319,6 @@ const App = () => {
         ref: excalidrawWrapperRef,
       },
       React.createElement(Excalidraw.default, {
-        ref: excalidrawRef,
-        width: dimensions.width,
-        height: dimensions.height,
         initialData: InitialData,
         onChange: (elements, state) =>
           console.log("Elements :", elements, "State : ", state),
@@ -341,29 +337,16 @@ const excalidrawWrapper = document.getElementById("app");
 ReactDOM.render(React.createElement(App), excalidrawWrapper);
 ```
 
+To view the full example visit :point_down:
+
 [![Edit excalidraw-in-browser](https://codesandbox.io/static/img/play-codesandbox.svg)](https://codesandbox.io/s/excalidraw-in-browser-tlqom?fontsize=14&hidenavigation=1&theme=dark)
 
-Since Excalidraw doesn't support server side rendering yet so you will have to make sure the component is rendered once host is mounted.
-
-```js
-import { useState, useEffect } from "react";
-export default function IndexPage() {
-  const [Comp, setComp] = useState(null);
-  useEffect(() => {
-    import("@excalidraw/excalidraw").then((comp) => setComp(comp.default));
-  });
-  return <>{Comp && <Comp />}</>;
-}
-```
+</details>
 
 ### Props
 
 | Name | Type | Default | Description |
 | --- | --- | --- | --- |
-| [`width`](#width) | Number | `window.innerWidth` | The width of Excalidraw component |
-| [`height`](#height) | Number | `window.innerHeight` | The height of Excalidraw component |
-| [`offsetLeft`](#offsetLeft) | Number | `0` | left position relative to which Excalidraw should be rendered |
-| [`offsetTop`](#offsetTop) | Number | `0` | top position relative to which Excalidraw should render |
 | [`onChange`](#onChange) | Function |  | This callback is triggered whenever the component updates due to any change. This callback will receive the excalidraw elements and the current app state. |
 | [`initialData`](#initialData) | <pre>{elements?: <a href="https://github.com/excalidraw/excalidraw/blob/master/src/element/types.ts#L78">ExcalidrawElement[]</a>, appState?: <a href="https://github.com/excalidraw/excalidraw/blob/master/src/types.ts#L37">AppState<a> } </pre> | null | The initial data with which app loads. |
 | [`ref`](#ref) | [`createRef`](https://reactjs.org/docs/refs-and-the-dom.html#creating-refs) or [`callbackRef`](https://reactjs.org/docs/refs-and-the-dom.html#callback-refs) or <pre>{ current: { readyPromise: <a href="https://github.com/excalidraw/excalidraw/blob/master/src/utils.ts#L317">resolvablePromise</a> } }</pre> |  | Ref to be passed to Excalidraw |
@@ -373,27 +356,18 @@ export default function IndexPage() {
 | [`onExportToBackend`](#onExportToBackend) | Function |  | Callback triggered when link button is clicked on export dialog |
 | [`langCode`](#langCode) | string | `en` | Language code string |
 | [`renderFooter `](#renderFooter) | Function |  | Function that renders custom UI footer |
+| [`renderCustomStats`](#renderCustomStats) | Function |  | Function that can be used to render custom stats on the stats dialog. |
 | [`viewModeEnabled`](#viewModeEnabled) | boolean |  | This implies if the app is in view mode. |
 | [`zenModeEnabled`](#zenModeEnabled) | boolean |  | This implies if the zen mode is enabled |
 | [`gridModeEnabled`](#gridModeEnabled) | boolean |  | This implies if the grid mode is enabled |
 | [`libraryReturnUrl`](#libraryReturnUrl) | string |  | What URL should [libraries.excalidraw.com](https://libraries.excalidraw.com) be installed to |
 | [`theme`](#theme) | `light` or `dark` |  | The theme of the Excalidraw component |
+| [`name`](#name) | string |  | Name of the drawing |
+| [`UIOptions`](#UIOptions) | <pre>{ canvasActions: <a href="https://github.com/excalidraw/excalidraw/blob/master/src/types.ts#L208"> CanvasActions<a/> }</pre> | [DEFAULT UI OPTIONS](https://github.com/excalidraw/excalidraw/blob/master/src/constants.ts#L129) | To customise UI options. Currently we support customising [`canvas actions`](#canvasActions) |
 
-#### `width`
+### Dimensions of Excalidraw
 
-This props defines the `width` of the Excalidraw component. Defaults to `window.innerWidth` if not passed.
-
-#### `height`
-
-This props defines the `height` of the Excalidraw component. Defaults to `window.innerHeight` if not passed.
-
-#### `offsetLeft`
-
-This prop defines `left` position relative to which Excalidraw should be rendered. Defaults to `0` if not passed.
-
-#### `offsetTop`
-
-This prop defines `top` position relative to which Excalidraw should be rendered. Defaults to `0` if not passed.
+Excalidraw takes `100%` of `width` and `height` of the containing block so make sure the container in which you render Excalidraw has non zero dimensions.
 
 #### `onChange`
 
@@ -465,6 +439,9 @@ You can pass a `ref` when you want to access some excalidraw APIs. We expose the
 | getAppState | <pre> () => <a href="https://github.com/excalidraw/excalidraw/blob/master/src/types.ts#L37">AppState</a></pre> | Returns current appState |
 | history | `{ clear: () => void }` | This is the history API. `history.clear()` will clear the history |
 | setScrollToContent | <pre> (<a href="https://github.com/excalidraw/excalidraw/blob/master/src/element/types.ts#L78">ExcalidrawElement[]</a>) => void </pre> | Scroll to the nearest element to center |
+| refresh | `() => void` | Updates the offsets for the Excalidraw component so that the coordinates are computed correctly (for example the cursor position). You don't have to call this when the position is changed on page scroll or when the excalidraw container resizes (we handle that ourselves). For any other cases if the position of excalidraw is updated (example due to scroll on parent container and not page scroll) you should call this API. |
+| [importLibrary](#importlibrary) | `(url: string, token?: string) => void` | Imports library from given URL |
+| setToastMessage | `(message: string) => void` | This API can be used to show the toast with custom message. |
 
 #### `readyPromise`
 
@@ -523,6 +500,10 @@ import { defaultLang, languages } from "@excalidraw/excalidraw";
 
 A function that renders (returns JSX) custom UI footer. For example, you can use this to render a language picker that was previously being rendered by Excalidraw itself (for now, you'll need to implement your own language picker).
 
+#### `renderCustomStats`
+
+A function that can be used to render custom stats (returns JSX) in the nerd stats dialog. For example you can use this prop to render the size of the elements in the storage.
+
 #### `viewModeEnabled`
 
 This prop indicates whether the app is in `view mode`. When supplied, the value takes precedence over `intialData.appState.viewModeEnabled`, the `view mode` will be fully controlled by the host app, and users won't be able to toggle it from within the app.
@@ -535,13 +516,63 @@ This prop indicates whether the app is in `zen mode`. When supplied, the value t
 
 This prop indicates whether the shows the grid. When supplied, the value takes precedence over `intialData.appState.gridModeEnabled`, the grid will be fully controlled by the host app, and users won't be able to toggle it from within the app.
 
-### `libraryReturnUrl`
+#### `libraryReturnUrl`
 
-If supplied, this URL will be used when user tries to install a library from [libraries.excalidraw.com](https://libraries.excalidraw.com). Default to `window.location.origin`.
+If supplied, this URL will be used when user tries to install a library from [libraries.excalidraw.com](https://libraries.excalidraw.com). Defaults to `window.location.origin + window.location.pathname`. To install the libraries in the same tab from which it was opened, you need to set `window.name` (to any alphanumeric string) — if it's not set it will open in a new tab.
 
-### `theme`
+#### `theme`
 
 This prop controls Excalidraw's theme. When supplied, the value takes precedence over `intialData.appState.theme`, the theme will be fully controlled by the host app, and users won't be able to toggle it from within the app.
+
+#### `name`
+
+This prop sets the name of the drawing which will be used when exporting the drawing. When supplied, the value takes precedence over `intialData.appState.name`, the `name` will be fully controlled by host app and the users won't be able to edit from within Excalidraw.
+
+### `UIOptions`
+
+This prop can be used to customise UI of Excalidraw. Currently we support customising only [`canvasActions`](#canvasActions). It accepts the below parameters
+
+<pre>
+{ canvasActions: <a href="https://github.com/excalidraw/excalidraw/blob/master/src/types.ts#L208"> CanvasActions<a/> }
+</pre>
+
+#### canvasActions
+
+| Attribute | Type | Default | Description |
+| --- | --- | --- | --- |
+| `changeViewBackgroundColor` | boolean | true | Implies whether to show `Background color picker` |
+| `clearCanvas` | boolean | true | Implies whether to show `Clear canvas button` |
+| `export` | boolean | true | Implies whether to show `Export button` |
+| `loadScene` | boolean | true | Implies whether to show `Load button` |
+| `saveAsScene` | boolean | true | Implies whether to show `Save as button` |
+| `saveScene` | boolean | true | Implies whether to show `Save button` |
+| `theme` | boolean | true | Implies whether to show `Theme toggle` |
+
+### Does it support collaboration ?
+
+No Excalidraw package doesn't come with collaboration, since this would have different implementations on the consumer so we expose the API's which you can use to communicate with Excalidraw as mentioned above. If you are interested in understanding how Excalidraw does it you can check it [here](https://github.com/excalidraw/excalidraw/blob/master/src/excalidraw-app/index.tsx).
+
+### importLibrary
+
+Imports library from given URL. You should call this on `hashchange`, passing the `addLibrary` value if you detect it as shown below. Optionally pass a CSRF `token` to skip prompting during installation (retrievable via `token` key from the url coming from [https://libraries.excalidraw.com](https://libraries.excalidraw.com/)).
+
+```js
+useEffect(() => {
+  const onHashChange = () => {
+    const hash = new URLSearchParams(window.location.hash.slice(1));
+    const libraryUrl = hash.get("addLibrary");
+    if (libraryUrl) {
+      excalidrawRef.current.importLibrary(libraryUrl, hash.get("token"));
+    }
+  };
+  window.addEventListener("hashchange", onHashChange, false);
+  return () => {
+    window.removeEventListener("hashchange", onHashChange);
+  };
+}, []);
+```
+
+Try out the [Demo](#Demo) to see it in action.
 
 ### Extra API's
 
@@ -570,7 +601,7 @@ getSyncableElements(elements:  <a href="https://github.com/excalidraw/excalidraw
 import { getSyncableElements } from "@excalidraw/excalidraw";
 ```
 
-This function returns all the deleted elements of the scene.
+Returns all elements including deleted ones, excluding elements which are are invisibly small (e.g. width & height are zero). Useful when you want to sync elements during collaboration.
 
 #### `getElementMap`
 
@@ -587,6 +618,8 @@ import { getElementsMap } from "@excalidraw/excalidraw";
 ```
 
 This function returns an object where each element is mapped to its id.
+
+### Restore utilities
 
 #### `restoreAppState`
 
@@ -636,10 +669,7 @@ import { restore } from "@excalidraw/excalidraw";
 
 This function makes sure elements and state is set to appropriate values and set to default value if not present. It is combination of [restoreElements](#restoreElements) and [restoreAppState](#restoreAppState)
 
-**_The below APIs will be available in [next version](https://github.com/excalidraw/excalidraw/blob/master/src/packages/excalidraw/CHANGELOG.md#unreleased)_**
-
-<details id="export-utils">
-<summary><strong>Export utilities</strong></summary>
+### Export utilities
 
 #### `exportToCanvas`
 
@@ -723,5 +753,3 @@ This function returns a svg with the exported elements.
 | viewBackgroundColor | string | #fff | The default background color |
 | shouldAddWatermark | boolean | false | Indicates whether watermark should be exported |
 | exportWithDarkMode | boolean | false | Indicates whether to export with dark mode |
-
-</details>

@@ -3,6 +3,7 @@ import { fireEvent, GlobalTestState, render } from "./test-utils";
 import Excalidraw from "../packages/excalidraw/index";
 import { queryByText, queryByTestId } from "@testing-library/react";
 import { GRID_SIZE } from "../constants";
+import { t } from "../i18n";
 
 const { h } = window;
 
@@ -102,6 +103,113 @@ describe("<Excalidraw/>", () => {
       expect(h.state.theme).toBe("dark");
 
       expect(queryByTestId(container, "toggle-dark-mode")).toBe(null);
+    });
+  });
+
+  describe("Test name prop", () => {
+    it('should allow editing name when the name prop is "undefined"', async () => {
+      const { container } = await render(<Excalidraw />);
+
+      fireEvent.click(queryByTestId(container, "export-button")!);
+      const textInput: HTMLInputElement | null = document.querySelector(
+        ".ExportDialog__name .TextInput",
+      );
+      expect(textInput?.value).toContain(`${t("labels.untitled")}`);
+      expect(textInput?.nodeName).toBe("INPUT");
+    });
+
+    it('should set the name and not allow editing when the name prop is present"', async () => {
+      const name = "test";
+      const { container } = await render(<Excalidraw name={name} />);
+
+      await fireEvent.click(queryByTestId(container, "export-button")!);
+      const textInput = document.querySelector(
+        ".ExportDialog__name .TextInput--readonly",
+      );
+      expect(textInput?.textContent).toEqual(name);
+      expect(textInput?.nodeName).toBe("SPAN");
+    });
+  });
+
+  describe("Test UIOptions prop", () => {
+    it('should not hide any UI element when the UIOptions prop is "undefined"', async () => {
+      await render(<Excalidraw />);
+
+      const canvasActions = document.querySelector(
+        'section[aria-labelledby="canvasActions-title"]',
+      );
+
+      expect(canvasActions).toMatchSnapshot();
+    });
+
+    describe("Test canvasActions", () => {
+      it('should not hide any UI element when canvasActions is "undefined"', async () => {
+        await render(<Excalidraw UIOptions={{}} />);
+
+        const canvasActions = document.querySelector(
+          'section[aria-labelledby="canvasActions-title"]',
+        );
+
+        expect(canvasActions).toMatchSnapshot();
+      });
+
+      it("should hide clear canvas button when clearCanvas is false", async () => {
+        const { container } = await render(
+          <Excalidraw UIOptions={{ canvasActions: { clearCanvas: false } }} />,
+        );
+
+        expect(queryByTestId(container, "clear-canvas-button")).toBeNull();
+      });
+
+      it("should hide export button when export is false", async () => {
+        const { container } = await render(
+          <Excalidraw UIOptions={{ canvasActions: { export: false } }} />,
+        );
+
+        expect(queryByTestId(container, "export-button")).toBeNull();
+      });
+
+      it("should hide load button when loadScene is false", async () => {
+        const { container } = await render(
+          <Excalidraw UIOptions={{ canvasActions: { loadScene: false } }} />,
+        );
+
+        expect(queryByTestId(container, "load-button")).toBeNull();
+      });
+
+      it("should hide save as button when saveAsScene is false", async () => {
+        const { container } = await render(
+          <Excalidraw UIOptions={{ canvasActions: { saveAsScene: false } }} />,
+        );
+
+        expect(queryByTestId(container, "save-as-button")).toBeNull();
+      });
+
+      it("should hide save button when saveScene is false", async () => {
+        const { container } = await render(
+          <Excalidraw UIOptions={{ canvasActions: { saveScene: false } }} />,
+        );
+
+        expect(queryByTestId(container, "save-button")).toBeNull();
+      });
+
+      it("should hide the canvas background picker when changeViewBackgroundColor is false", async () => {
+        const { container } = await render(
+          <Excalidraw
+            UIOptions={{ canvasActions: { changeViewBackgroundColor: false } }}
+          />,
+        );
+
+        expect(queryByTestId(container, "canvas-background-picker")).toBeNull();
+      });
+
+      it("should hide the theme toggle when theme is false", async () => {
+        const { container } = await render(
+          <Excalidraw UIOptions={{ canvasActions: { theme: false } }} />,
+        );
+
+        expect(queryByTestId(container, "toggle-dark-mode")).toBeNull();
+      });
     });
   });
 });
